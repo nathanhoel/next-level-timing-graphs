@@ -1,5 +1,4 @@
-# Serving HTML through API Gateway for AWS Lambda
-service: serve-dynamic-html-via-http-endpoint
+service: next-level-timing-graphs
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 

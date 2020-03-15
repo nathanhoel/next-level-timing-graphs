@@ -57,8 +57,9 @@ module.exports.handle = async (event, context, callback) => {
       statusCode: 200,
       body: JSON.stringify(results),
     };
-    callback(null, response);
   };
+
+  callback(null, response);
 }
 
 function _timeStringToMS(duration) {

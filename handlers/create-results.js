@@ -3,6 +3,7 @@ const AWS = require('aws-sdk');
 const bs58 = require('bs58');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const RACE_ID = '93c856b2-027a-40f6-b06d-ee0c90068643';
 
 module.exports.handle = async (event, context, callback) => {
   const timestamp = new Date().toISOString();
@@ -36,7 +37,7 @@ module.exports.handle = async (event, context, callback) => {
       id: uuid.v4(),
       createdAt: timestamp,
       name,
-      sortKey: `${(10000 - parseInt(totalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(totalTime).toString().padStart(10, '0')}`,
+      sortKey: `${RACE_ID}_${(10000 - parseInt(totalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(totalTime).toString().padStart(10, '0')}`,
       totalLaps,
       totalTime: _timeStringToMS(totalTime),
       fastestLap: _timeStringToMS(fastestLap),

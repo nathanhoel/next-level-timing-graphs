@@ -51,7 +51,7 @@ module.exports.handle = async (event, context, callback) => {
       Item: result,
     };
 
-    const response = await dynamoDb.put(params).promise();
+    await dynamoDb.put(params).promise();
 
     const response = {
       statusCode: 200,

@@ -63,5 +63,5 @@ module.exports.handle = async (event, context, callback) => {
 }
 
 function _timeStringToMS(duration) {
-  return (duration.split(':').reduce((acc, time) => (60 * acc) + +time) * 1000).toFixed(0);
+  return parseInt((duration.split(':').reduce((acc, time) => (60 * acc) + +time) * 1000).toFixed(0));
 }

@@ -52,11 +52,11 @@ module.exports.handle = async (event, context, callback) => {
     };
 
     await dynamoDb.put(params).promise();
+  };
 
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify(results),
-    };
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify(results),
   };
 
   callback(null, response);

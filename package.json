@@ -3,5 +3,9 @@
   "version": "1.0.0",
   "description": "Hookup an AWS API Gateway endpoint to a Lambda function to render HTML on a `GET` request",
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.639.0",
+    "bs58": "^4.0.1"
+  }
 }

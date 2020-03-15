@@ -5,11 +5,48 @@ frameworkVersion: ">=1.1.0 <2.0.0"
 provider:
   name: aws
   runtime: nodejs12.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/nlt-results"
 
 functions:
   landingPage:
-    handler: handler.landingPage
+    handler: handlers/handler.landingPage
     events:
       - http:
           method: get
           path: landing-page
+
+  createResult:
+    handler: handlers/create-results.handle
+    events:
+      - http:
+          method: post
+          path: results
+
+resources:
+  Resources:
+    ResulsTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        TableName: 'nlt-results'
+        AttributeDefinitions:
+          - AttributeName: name
+            AttributeType: S
+          - AttributeName: sortKey
+            AttributeType: S
+        KeySchema:
+          - AttributeName: name
+            KeyType: HASH
+          - AttributeName: sortKey
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+

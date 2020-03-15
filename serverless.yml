@@ -33,11 +33,11 @@ functions:
 
 resources:
   Resources:
-    TodosDynamoDbTable:
-      TableName: 'nlt-results'
+    ResulsTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
+        TableName: 'nlt-results'
         AttributeDefinitions:
           - AttributeName: name
             AttributeType: S

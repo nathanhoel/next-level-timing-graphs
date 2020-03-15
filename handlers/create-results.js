@@ -6,7 +6,8 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.handle = async (event, context, callback) => {
   const timestamp = new Date().toISOString();
-  if (typeof event.body !== 'string') {
+  const { body } = event;
+  if (typeof body !== 'string') {
     console.error('Validation Failed');
     callback(null, {
       statusCode: 400,
@@ -16,7 +17,7 @@ module.exports.handle = async (event, context, callback) => {
     return;
   }
 
-  const dataBytes = require('bs58').decode(body.data);
+  const dataBytes = require('bs58').decode(body);
   const rawData = dataBytes.toString('utf8');
 
   // split the results into header and sets

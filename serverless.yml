@@ -31,6 +31,13 @@ functions:
           method: post
           path: results
 
+  getResult:
+    handler: handlers/get-race.handle
+    events:
+      - http:
+          method: get
+          path: races/{id}
+
 resources:
   Resources:
     ResulsTable:

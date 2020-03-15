@@ -18,7 +18,7 @@ module.exports.handle = async (event, context, callback) => {
     return;
   }
 
-  const dataBytes = require('bs58').decode(body);
+  const dataBytes = bs58.decode(body);
   const rawData = dataBytes.toString('utf8');
 
   // split the results into header and sets

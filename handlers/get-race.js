@@ -28,16 +28,18 @@ module.exports.handle = async function (event, context, callback) {
   const html = `
   <html>
     <head>
-      <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/chartist-plugin-tooltips@0.0.17/dist/chartist-plugin-tooltip.min.css">
       <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+      <script src="//cdn.jsdelivr.net/npm/chartist-plugin-tooltips@0.0.17/dist/chartist-plugin-tooltip.min.js"></script>
       <script>
         ${chartistPointLabels}
         InitChartistPointLabels(Chartist);
       </script>
     </head>
     <body>
-      <div style="margin-top: 40px;">
-        <div class="ct-chart"></div>
+      <div style="margin: 40px; width: 90%; overflow-x: auto;">
+        <div class="ct-chart" style="margin-left: -20;"></div>
       </div>
       <script>
         var chart = new Chartist.Line('.ct-chart', {
@@ -82,6 +84,17 @@ module.exports.handle = async function (event, context, callback) {
               labelInterpolationFnc: (value) => {
                 return (value == 0) ? "" : value;
               }
+            }),
+            Chartist.plugins.tooltip({
+              tooltipFnc: x => {
+                const minutes = Math.floor(x / 60000).toString().padStart(2, '0');
+                const seconds = Math.floor((x % 60000) / 1000).toString().padStart(2, '0');
+                const ms = (x % 1000).toString();
+                return minutes + ':' + seconds + '.' + ms;
+              },
+              class: 'chartist-everlaps-tooltip',
+              anchorToPoint: false,
+              appendToBody: true,
             })
           ],
         });

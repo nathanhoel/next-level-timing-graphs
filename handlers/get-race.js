@@ -32,11 +32,7 @@ module.exports.handle = async function (event, context, callback) {
       </div>
       <script>
         var chart = new Chartist.Line('.ct-chart', {
-          series: [
-            [{x: 1, y: 1}, {x:1.24, y: 1}, {x: 2.6, y:1}, {x:3.9, y: 2}, {x:5.6, y: 2}, {x:6.2, y: 1}],
-            [{x: 1, y: 2}, {x:1.54, y: 2}, {x: 2.71, y:2}, {x:3.77, y: 1}, {x:5.23, y: 1}, {x:6.24, y: 2}],
-            [{x: 1, y: 3}, {x:1.54, y: 2}, {x: 2.71, y:2}, {x:3.77, y: 1}, {x:5.23, y: 1}, {x:6.24, y: 2}],
-          ]
+          series: ${JSON.stringify(_series(bestResults))}
         }, {
           fullWidth: true,
           height: '75px',
@@ -99,7 +95,7 @@ function _accumalteLaps(results) {
 }
 
 function _rankLaps(results) {
-  const maxLaps = Math.max.apply(Math, array.map(result => result.laps.length));
+  const maxLaps = Math.max.apply(Math, results.map(result => result.laps.length));
   for (const result of results) {
     result.rankedLaps = [];
   }
@@ -122,4 +118,14 @@ function _rankLaps(results) {
       thisLapForAllDrivers[i].position = i + 1;
     }
   }
+}
+
+function _series(results) {
+  const series = [];
+  for (const result of results) {
+    const set = result.rankedLaps.map(lap => { x: lap.time, y: lap.position });
+    series.push(set);
+  }
+
+  return series;
 }

@@ -72,7 +72,7 @@ module.exports.handle = async function (event, context, callback) {
           },
           axisY: {
             type: Chartist.FixedScaleAxis,
-            ticks: ${JSON.stringify([...Array(bestResults.length).keys()])},
+            ticks: ${JSON.stringify([...Array(bestResults.length + 1).keys()])},
             onlyInteger: true,
             showGrid: true,
             showLabel: false,

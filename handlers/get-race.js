@@ -289,7 +289,7 @@ function _resultRow(result, place) {
       <th scope="row">${result.name}</th>
       <td class="total-laps">${result.totalLaps}L ${_msToTimeFormat(result.totalTime)}</td >
       <td>${_msToTimeFormat(result.fastestLap)}</td>
-      <td>${_msToTimeFormat(Math.floor(result.totalTime - (result.startTime || 0) / result.totalLaps))}</td>
+      <td>${_msToTimeFormat(Math.floor((result.totalTime - (result.startTime || 0)) / result.totalLaps))}</td>
     </tr>
   `;
 }

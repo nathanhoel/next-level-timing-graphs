@@ -251,7 +251,7 @@ function _series(results) {
   const numDrivers = results.length;
   const series = [];
   for (const result of results) {
-    const set = result.rankedLaps.map((lap, i) => ({ x: lap.time, meta: lap.lapTime || 0, y: numDrivers - lap.position + 1, lapNum: lap.lapNum }));
+    const set = result.rankedLaps.map((lap, i) => ({ x: lap.time, meta: { lapTime: lap.lapTime || 0, lapNum: lap.lapNum }, y: numDrivers - lap.position + 1 }));
     series.push(set);
   }
 

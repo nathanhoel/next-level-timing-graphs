@@ -46,7 +46,9 @@ module.exports.handle = async function (event, context, callback) {
         }
 
         .ct-axis-title {
-          font-size: 0.7em;
+          font-size: 0.6em;
+          font-weight: 600;
+          fill: #444444;
         }
       </style>
     </head>
@@ -133,7 +135,7 @@ module.exports.handle = async function (event, context, callback) {
             var dot = new Chartist.Svg('circle', {
               cx: data.x,
               cy: data.y,
-              r: 6,
+              r: 7,
               'ct:meta': data.meta,
             }, 'ct-slice-pie');
 

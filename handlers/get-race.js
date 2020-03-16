@@ -50,6 +50,10 @@ module.exports.handle = async function (event, context, callback) {
           font-weight: 600;
           fill: #444444;
         }
+
+        .ct-label.ct-horizontal.ct-end {
+          margin-left: -16px;
+        }
       </style>
     </head>
     <body>

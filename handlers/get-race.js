@@ -71,6 +71,7 @@ module.exports.handle = async function (event, context, callback) {
             }
           },
           axisY: {
+            type: Chartist.FixedScaleAxis,
             onlyInteger: true,
             showGrid: true,
             showLabel: true,

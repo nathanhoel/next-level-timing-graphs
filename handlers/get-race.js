@@ -89,7 +89,7 @@ module.exports.handle = async function (event, context, callback) {
               tooltipFnc: x => {
                 const minutes = Math.floor(x / 60000).toString().padStart(2, '0');
                 const seconds = Math.floor((x % 60000) / 1000).toString().padStart(2, '0');
-                const ms = (x % 1000).toString();
+                const ms = (x % 1000).toString().padEnd(3, '0');
                 return minutes + ':' + seconds + '.' + ms;
               },
               class: 'chartist-everlaps-tooltip',
@@ -168,7 +168,7 @@ function _series(results) {
   const numDrivers = results.length;
   const series = [];
   for (const result of results) {
-    const set = result.rankedLaps.map((lap, i) => ({ x: lap.time, meta: result.laps[i], la y: numDrivers - lap.position + 1 }));
+    const set = result.rankedLaps.map((lap, i) => ({ x: lap.time, meta: result.laps[i], y: numDrivers - lap.position + 1 }));
     series.push(set);
   }
 

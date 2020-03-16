@@ -32,9 +32,10 @@ module.exports.handle = async function (event, context, callback) {
   for (const rawResult of rawResults) {
     let [, name, totalLaps, , totalTime, fastestLap, , , ...rawLaps] = rawResult.split(/\n/g);
 
+    const totalTime = _timeStringToMS(totalTime);
     const laps = rawLaps.map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
     const totalLapTime = laps.reduce((total, cur) => total + cur, 0);
-    const startTime = result.totalTime - totalLapTime;
+    const startTime = totalTime - totalLapTime;
 
     const result = {
       id: uuid.v4(),
@@ -43,7 +44,7 @@ module.exports.handle = async function (event, context, callback) {
       sortKey: `${name}_${(10000 - parseInt(totalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(totalTime).toString().padStart(10, '0')}`,
       name,
       totalLaps,
-      totalTime: _timeStringToMS(totalTime),
+      totalTime,
       fastestLap: _timeStringToMS(fastestLap),
       laps,
     };

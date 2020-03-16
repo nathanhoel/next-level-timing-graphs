@@ -191,13 +191,7 @@ function _getDriverBestResults(results) {
 function _accumalteLaps(results) {
   for (const result of results) {
     const accumaltedLaps = [];
-
-    if (result.startTime) {
-      accumaltedLaps[0] = result.startTime;
-    }
-
-    const totalLaps = result.laps.length + accumaltedLaps.length;
-    for (let i = accumaltedLaps.length; i < totalLaps; i++) {
+    for (let i = 0; i < result.laps.length; i++) {
       accumaltedLaps[i] = (accumaltedLaps[i - 1] || 0) + result.laps[i];
     }
     result.accumaltedLaps = accumaltedLaps;
@@ -218,7 +212,7 @@ function _rankLaps(results) {
         continue;
       }
 
-      const rankedLap = { time };
+      const rankedLap = { time, lapTime: result.laps[lapNum], lapNum: !!result.startTime ? lapNum : lapNum + 1 };
       result.rankedLaps.push(rankedLap);
       thisLapForAllDrivers.push(rankedLap);
     }
@@ -231,7 +225,7 @@ function _rankLaps(results) {
     // add a fake 0th lap
     if (lapNum === 0) {
       for (const result of results) {
-        result.rankedLaps.unshift({ time: 0, position: result.rankedLaps[0].position });
+        result.rankedLaps.unshift({ time: 0, lapTime: 0, lapNum: '', position: result.rankedLaps[0].position });
       }
     }
   }
@@ -257,7 +251,7 @@ function _series(results) {
   const numDrivers = results.length;
   const series = [];
   for (const result of results) {
-    const set = result.rankedLaps.map((lap, i) => ({ x: lap.time, meta: result.laps[i - 1] || 0, y: numDrivers - lap.position + 1 }));
+    const set = result.rankedLaps.map((lap, i) => ({ x: lap.time, meta: lap.lapTime || 0, y: numDrivers - lap.position + 1, lapNum: lap.lapNum }));
     series.push(set);
   }
 

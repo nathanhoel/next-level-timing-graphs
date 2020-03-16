@@ -31,6 +31,11 @@ module.exports.handle = async function (event, context, callback) {
   const results = [];
   for (const rawResult of rawResults) {
     let [, name, totalLaps, , totalTime, fastestLap, , , ...rawLaps] = rawResult.split(/\n/g);
+
+    const laps = rawLaps.map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
+    const totalLapTime = laps.reduce((total, cur) => total + cur, 0);
+    const startTime = result.totalTime - totalLapTime;
+
     const result = {
       id: uuid.v4(),
       createdAt: timestamp,
@@ -40,11 +45,13 @@ module.exports.handle = async function (event, context, callback) {
       totalLaps,
       totalTime: _timeStringToMS(totalTime),
       fastestLap: _timeStringToMS(fastestLap),
-      laps: rawLaps.map((rawLap) => _timeStringToMS(rawLap.split(' ')[1])),
+      laps,
     };
 
-    const totalLapTime = result.laps.reduce((total, cur) => total + cur, 0);
-    result.startTime = result.totalTime - totalLapTime;
+    if (startTime > 10) {
+      laps.unshift(startTime);
+      result.startTime = startTime;
+    }
 
     results.push(result);
   }

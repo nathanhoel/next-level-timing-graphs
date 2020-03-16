@@ -36,7 +36,7 @@ module.exports.handle = async function (event, context, callback) {
       </script>
     </head>
     <body>
-      <div style="margin: 5%;">
+      <div style="margin-top: 40px;">
         <div class="ct-chart"></div>
       </div>
       <script>
@@ -51,7 +51,6 @@ module.exports.handle = async function (event, context, callback) {
           chartPadding: {
             right: 10
           },
-          low: 1,
           axisX: {
             type: Chartist.FixedScaleAxis,
             ticks: ${JSON.stringify(_ticks(race))},

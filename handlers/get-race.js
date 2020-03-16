@@ -35,7 +35,7 @@ module.exports.handle = async function (event, context, callback) {
           series: ${JSON.stringify(_series(bestResults))}
         }, {
           fullWidth: true,
-          height: '75px',
+          height: '${25 * bestResults.length}px',
           lineSmooth: false,
           onlyInteger: false,
           chartPadding: {

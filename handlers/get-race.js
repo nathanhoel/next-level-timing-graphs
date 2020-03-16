@@ -74,7 +74,7 @@ module.exports.handle = async function (event, context, callback) {
             onlyInteger: true,
             showGrid: true,
             showLabel: true,
-            divisor: 3
+            divisor: ${bestResults.length + 1}
           },
           chartPadding: {
             top: 10,
@@ -184,7 +184,7 @@ function _rankLaps(results) {
 function _startDrivers(results) {
   const startDrivers = [];
   for (const result of results) {
-    startDrivers[result.rankedLaps[0].position] = result.name;
+    startDrivers[result.rankedLaps[0].position - 1] = result.name;
   }
   return startDrivers;
 }
@@ -192,7 +192,7 @@ function _startDrivers(results) {
 function _endDrivers(results) {
   const endDrivers = [];
   for (const result of results) {
-    endDrivers[result.rankedLaps[result.rankedLaps.length - 1].position] = result.name;
+    endDrivers[result.rankedLaps[result.rankedLaps.length - 1].position - 1] = result.name;
   }
   return endDrivers;
 }

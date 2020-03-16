@@ -44,8 +44,10 @@ module.exports.handle = async function (event, context, callback) {
           low: 1,
           axisX: {
             type: Chartist.FixedScaleAxis,
-            ticks: [1,2,3,4,5,6,7,8,9],
-            onlyInteger: true
+            ticks: [0,30000,60000,90000,120000,150000,180000,210000],
+            labelInterpolationFnc: function(value) {
+              return '01:00';
+            }
           },
           axisY: {
             onlyInteger: true,
@@ -123,7 +125,7 @@ function _rankLaps(results) {
 function _series(results) {
   const series = [];
   for (const result of results) {
-    const set = result.rankedLaps.map(lap => { x: lap.time, y: lap.position });
+    const set = result.rankedLaps.map(lap => ({ x: lap.time, y: lap.position }));
     series.push(set);
   }
 

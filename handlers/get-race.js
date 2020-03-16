@@ -29,9 +29,13 @@ module.exports.handle = async function (event, context, callback) {
         ${chartistPointLabels}
         InitChartistPointLabels(Chartist);
       </script>
+      <style>
+        .ct-label {
+          font-size: 0.5em;
+        }
+      </style>
     </head>
     <body>
-      ${JSON.stringify(bestResults)}
       <div style="width: 90%;">
         <div class="ct-chart"></div>
       </div>
@@ -52,7 +56,13 @@ module.exports.handle = async function (event, context, callback) {
             type: Chartist.FixedScaleAxis,
             ticks: [0,30000,60000,90000,120000,150000,180000,210000],
             labelInterpolationFnc: function(value) {
-              return '01:00';
+              const minutes = Math.floor(value / 60000);
+              const minutesFormat = minutes.toString().padStart(2, '0');
+              if (value / 60000 > minutes) {
+                return  minutesFormat + ':30';
+              }
+
+              return minutesFormat + ':00';
             }
           },
           axisY: {
@@ -71,7 +81,7 @@ module.exports.handle = async function (event, context, callback) {
             Chartist.plugins.ctPointLabels({
               textAnchor: 'middle',
               labelInterpolationFnc: (value) => {
-                return (value == 0) ? "·" : value;
+                return (value == 0) ? "" : value;
               }
             })
           ],

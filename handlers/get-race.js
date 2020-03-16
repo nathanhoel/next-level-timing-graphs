@@ -29,10 +29,15 @@ module.exports.handle = async function (event, context, callback) {
   const html = `
   <html>
     <head>
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/chartist-plugin-tooltips@0.0.17/dist/chartist-plugin-tooltip.min.css">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+      <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+      <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/chartist-plugin-tooltips@0.0.17/dist/chartist-plugin-tooltip.min.css">
       <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
       <script src="//cdn.jsdelivr.net/npm/chartist-plugin-tooltips@0.0.17/dist/chartist-plugin-tooltip.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
       <script>
         ${chartistPointLabels}
         InitChartistPointLabels(Chartist);
@@ -57,6 +62,22 @@ module.exports.handle = async function (event, context, callback) {
       </style>
     </head>
     <body>
+      <div style="margin: 40px; width: 90%;">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Driver</th>
+              <th scope="col">Lap / Time</th>
+              <th scope="col">Fastest</th>
+              <th scope="col">Average</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${bestResults.map(result => JSON.stringify(_resultRow(result))).join('')}
+          </tbody>
+        </table>
+      </div>
+
       <div style="margin: 40px; width: 90%; overflow-x: auto;">
         <div class="ct-chart" style=""></div>
       </div>
@@ -242,4 +263,28 @@ function _xTicks(race) {
   }
 
   return ticks;
+}
+
+
+function _resultRow(result) {
+  return `
+    <tr>
+      <th scope="row">${result.name}</th>
+      <td>${result.totalLaps} Laps ${_msToTimeFormat(result.totalTime)}</td >
+      <td>${_msToTimeFormat(result.fastestLap)}</td>
+      <td>${_msToTimeFormat(Math.floor(result.totalLaps / result.totalTime))}</td>
+    </tr>
+  `;
+}
+
+function _msToTimeFormat(ms, displayMs = true) {
+  const minutesLabel = Math.floor(ms / 60000).toString().padStart(2, '0');
+  const secondsLabel = Math.floor((ms % 60000) / 1000).toString().padStart(2, '0');
+  const msLabel = (ms % 1000).toString().padEnd(3, '0');
+  let label = minutesLabel + ':' + secondsLabel;
+  if (displayMs) {
+    label += '.' + msLabel
+  }
+
+  return label;
 }

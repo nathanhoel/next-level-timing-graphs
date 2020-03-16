@@ -37,7 +37,7 @@ module.exports.handle = async function (event, context, callback) {
         ${chartistPointLabels}
         InitChartistPointLabels(Chartist);
 
-        ${chartistPointLabels}
+        ${chartistRight}
         InitChartistRight(Chartist);
       </script>
     </head>

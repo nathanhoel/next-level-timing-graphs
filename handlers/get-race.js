@@ -59,7 +59,11 @@ module.exports.handle = async function (event, context, callback) {
         }
 
         .ct-label.ct-horizontal.ct-end {
-          margin-left: -16px;
+          margin-left: -20px;
+        }
+
+        .ct-label {
+          font-size: 1em;
         }
       </style>
     </head>
@@ -68,11 +72,11 @@ module.exports.handle = async function (event, context, callback) {
         <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col">Place</th>
-              <th scope="col">Driver</th>
-              <th scope="col">Lap / Time</th>
-              <th scope="col">Fastest</th>
-              <th scope="col">Average</th>
+              <th scope="col" style="width: 10%">Place</th>
+              <th scope="col" style="width: 30%">Driver</th>
+              <th scope="col" style="width: 20%">Lap / Time</th>
+              <th scope="col" style="width: 20%">Fastest</th>
+              <th scope="col" style="width: 20%">Average</th>
             </tr>
           </thead>
           <tbody>
@@ -89,7 +93,7 @@ module.exports.handle = async function (event, context, callback) {
           series: ${JSON.stringify(_series(bestResults))}
         }, {
           width: '${75 * maxLaps}px',
-          height: '${40 * bestResults.length}px',
+          height: '${32 * bestResults.length}px',
           lineSmooth: false,
           onlyInteger: false,
           low: 0,

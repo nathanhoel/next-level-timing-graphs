@@ -127,7 +127,7 @@ module.exports.handle = async function (event, context, callback) {
             }),
             Chartist.plugins.tooltip({
               tooltipFnc: meta => {
-                const x = meta.lapTime;
+                const x = Chartist.deserialize(meta).lapTime;
                 const minutes = Math.floor(x / 60000).toString().padStart(2, '0');
                 const seconds = Math.floor((x % 60000) / 1000).toString().padStart(2, '0');
                 const ms = (x % 1000).toString().padStart(3, '0');
@@ -160,7 +160,7 @@ module.exports.handle = async function (event, context, callback) {
               cx: data.x,
               cy: data.y,
               r: 6.5,
-              'ct:meta': data.meta,
+              'ct:meta': Chartist.serialize(data.meta),
             }, 'ct-slice-pie');
 
             data.element.replace(dot);

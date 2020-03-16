@@ -130,9 +130,10 @@ function _rankLaps(results) {
 }
 
 function _series(results) {
+  const numDrivers = results.length;
   const series = [];
   for (const result of results) {
-    const set = result.rankedLaps.map(lap => ({ x: lap.time, y: lap.position }));
+    const set = result.rankedLaps.map(lap => ({ x: lap.time, y: numDrivers - lap.position + 1 }));
     series.push(set);
   }
 

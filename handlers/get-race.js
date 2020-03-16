@@ -73,7 +73,7 @@ module.exports.handle = async function (event, context, callback) {
             </tr>
           </thead>
           <tbody>
-            ${bestResults.map(result => JSON.stringify(_resultRow(result))).join('')}
+            ${bestResults.map(result => _resultRow(result)).join('')}
           </tbody>
         </table>
       </div>
@@ -270,9 +270,9 @@ function _resultRow(result) {
   return `
     <tr>
       <th scope="row">${result.name}</th>
-      <td>${result.totalLaps} Laps ${_msToTimeFormat(result.totalTime)}</td >
+      <td>${result.totalLaps}L ${_msToTimeFormat(result.totalTime)}</td >
       <td>${_msToTimeFormat(result.fastestLap)}</td>
-      <td>${_msToTimeFormat(Math.floor(result.totalLaps / result.totalTime))}</td>
+      <td>${_msToTimeFormat(Math.floor(result.totalTime / result.totalLaps))}</td>
     </tr>
   `;
 }

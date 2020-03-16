@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const chartistPointLabels = require('../lib/chartist-pointlabels');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = `${process.env.STAGE}-nlt-results`;
@@ -24,10 +25,14 @@ module.exports.handle = async function (event, context, callback) {
     <head>
       <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
       <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+      <script>
+        ${chartistPointLabels}
+        InitChartistPointLabels(Chartist);
+      </script>
     </head>
     <body>
       ${JSON.stringify(bestResults)}
-      <div style="width: 80%;">
+      <div style="width: 90%;">
         <div class="ct-chart"></div>
       </div>
       <script>
@@ -38,6 +43,7 @@ module.exports.handle = async function (event, context, callback) {
           height: '${25 * bestResults.length}px',
           lineSmooth: false,
           onlyInteger: false,
+          low: 0,
           chartPadding: {
             right: 10
           },
@@ -52,7 +58,6 @@ module.exports.handle = async function (event, context, callback) {
           axisY: {
             onlyInteger: true,
             showGrid: true,
-            low: 0,
             showLabel: true,
             divisor: 3
           },
@@ -62,6 +67,14 @@ module.exports.handle = async function (event, context, callback) {
             bottom: 0,
             left: 50
           },
+          plugins: [
+            Chartist.plugins.ctPointLabels({
+              textAnchor: 'middle',
+              labelInterpolationFnc: (value) => {
+                return (value == 0) ? "·" : value;
+              }
+            })
+          ],
         });
       </script>
     </body>

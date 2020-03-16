@@ -121,12 +121,13 @@ module.exports.handle = async function (event, context, callback) {
           plugins: [
             Chartist.plugins.ctPointLabels({
               textAnchor: 'middle',
-              labelInterpolationFnc: (value) => {
-                return (value == 0) ? "" : value - ${hasLapZero ? 1 : 0};
+              labelInterpolationFnc: (meta) => {
+                return meta.lapNum;
               }
             }),
             Chartist.plugins.tooltip({
-              tooltipFnc: x => {
+              tooltipFnc: meta => {
+                const x = meta.lapTime;
                 const minutes = Math.floor(x / 60000).toString().padStart(2, '0');
                 const seconds = Math.floor((x % 60000) / 1000).toString().padStart(2, '0');
                 const ms = (x % 1000).toString().padStart(3, '0');

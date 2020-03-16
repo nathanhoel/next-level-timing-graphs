@@ -130,8 +130,8 @@ module.exports.handle = async function (event, context, callback) {
         chart.on('draw', function(data) {
           if(data.type === 'point') {
             var dot = new Chartist.Svg('circle', {
-              cx: data.x2,
-              cy: data.y2,
+              cx: data.x,
+              cy: data.y,
               r: 10,
             }, 'ct-slice-pie');
 

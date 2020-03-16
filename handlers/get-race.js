@@ -20,6 +20,8 @@ module.exports.handle = async function (event, context, callback) {
   _accumalteLaps(bestResults);
   _rankLaps(bestResults);
 
+  const maxLaps = Math.max.apply(Math, bestResults.map(result => result.laps.length));
+
   const html = `
   <html>
     <head>
@@ -29,21 +31,16 @@ module.exports.handle = async function (event, context, callback) {
         ${chartistPointLabels}
         InitChartistPointLabels(Chartist);
       </script>
-      <style>
-        .ct-label {
-          font-size: 0.5em;
-        }
-      </style>
     </head>
     <body>
-      <div style="width: 90%;">
+      <div style="margin: 5%;">
         <div class="ct-chart"></div>
       </div>
       <script>
         var chart = new Chartist.Line('.ct-chart', {
           series: ${JSON.stringify(_series(bestResults))}
         }, {
-          fullWidth: true,
+          width: '${50 * maxLaps[]}px',
           height: '${25 * bestResults.length}px',
           lineSmooth: false,
           onlyInteger: false,

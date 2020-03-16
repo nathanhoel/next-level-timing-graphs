@@ -132,7 +132,7 @@ module.exports.handle = async function (event, context, callback) {
             var dot = new Chartist.Svg('circle', {
               cx: data.x,
               cy: data.y,
-              r: 10,
+              r: 6,
             }, 'ct-slice-pie');
 
             data.element.replace(dot);

@@ -40,10 +40,19 @@ module.exports.handle = async function (event, context, callback) {
         ${chartistRight}
         InitChartistRight(Chartist);
       </script>
+      <style>
+        body {
+          font-family: Montserrat,sans-serif;
+        }
+
+        .ct-axis-title {
+          font-size: 0.7em;
+        }
+      </style>
     </head>
     <body>
       <div style="margin: 40px; width: 90%; overflow-x: auto;">
-        <div class="ct-chart" style="margin-left: -20;"></div>
+        <div class="ct-chart" style=""></div>
       </div>
       <script>
         var chart = new Chartist.Line('.ct-chart', {
@@ -116,6 +125,18 @@ module.exports.handle = async function (event, context, callback) {
               }
             }),
           ],
+        });
+
+        chart.on('draw', function(data) {
+          if(data.type === 'point') {
+            var dot = new Chartist.Svg('circle', {
+              cx: data.x2,
+              cy: data.y2,
+              r: 10,
+            }, 'ct-slice-pie');
+
+            data.element.replace(dot);
+          }
         });
       </script>
     </body>

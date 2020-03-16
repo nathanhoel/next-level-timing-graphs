@@ -23,6 +23,7 @@ module.exports.handle = async function (event, context, callback) {
   const bestResults = _getDriverBestResults(allResults);
   _accumalteLaps(bestResults);
   _rankLaps(bestResults);
+  _sortByPlace(bestResults);
 
   const hasLapZero = !!bestResults[0].startTime;
   const maxLaps = Math.max.apply(Math, bestResults.map(result => result.laps.length));
@@ -75,7 +76,7 @@ module.exports.handle = async function (event, context, callback) {
             </tr>
           </thead>
           <tbody>
-            ${bestResults.map(result => _resultRow(result)).join('')}
+            ${bestResults.map((result, index) => _resultRow(result, index + 1)).join('')}
           </tbody>
         </table>
       </div>
@@ -87,8 +88,8 @@ module.exports.handle = async function (event, context, callback) {
         var chart = new Chartist.Line('.ct-chart', {
           series: ${JSON.stringify(_series(bestResults))}
         }, {
-          width: '${50 * maxLaps}px',
-          height: '${25 * bestResults.length}px',
+          width: '${75 * maxLaps}px',
+          height: '${40 * bestResults.length}px',
           lineSmooth: false,
           onlyInteger: false,
           low: 0,
@@ -232,6 +233,10 @@ function _rankLaps(results) {
   }
 }
 
+function _sortByPlace(results) {
+  results.sort((a, b) => a.rankedLaps[a.rankedLaps.length - 1].position - b.rankedLaps[b.rankedLaps.length - 1].position);
+}
+
 function _startDrivers(results) {
   const startDrivers = [];
   for (const result of results) {
@@ -261,7 +266,7 @@ function _series(results) {
 
 function _xTicks(race) {
   const ticks = [];
-  for (let ms = 0; ms <= race.length + 30000; ms += 15000) {
+  for (let ms = 0; ms <= race.length; ms += 15000) {
     ticks.push(ms);
   }
 

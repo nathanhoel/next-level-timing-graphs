@@ -72,10 +72,10 @@ module.exports.handle = async function (event, context, callback) {
           },
           axisY: {
             type: Chartist.FixedScaleAxis,
+            ticks: ${[...Array(bestResults.length).keys()]},
             onlyInteger: true,
             showGrid: true,
-            showLabel: true,
-            divisor: ${bestResults.length + 1}
+            showLabel: false,
           },
           chartPadding: {
             top: 10,

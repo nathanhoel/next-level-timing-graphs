@@ -34,7 +34,7 @@ module.exports.handle = async function (event, context, callback) {
   const results = [];
   for (const rawResult of rawResults) {
     let [, name, totalLaps, , totalTime, fastestLap, , , ...rawLaps] = rawResult.split(/\n/g);
-    results.push({
+    const result = {
       id: uuid.v4(),
       createdAt: timestamp,
       race: RACE_ID,
@@ -44,9 +44,13 @@ module.exports.handle = async function (event, context, callback) {
       totalTime: _timeStringToMS(totalTime),
       fastestLap: _timeStringToMS(fastestLap),
       laps: rawLaps.map((rawLap) => _timeStringToMS(rawLap.split(' ')[1])),
-    });
+    };
+
+    const totalLapTime = result.laps.reduce((total, cur) => { total + cur }, 0);
+    result.startTime = result.totalTime - totalLapTime;
+
+    results.push(result);
   }
-  console.log(results);
 
   for (const result of results) {
     const params = {

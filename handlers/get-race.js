@@ -66,6 +66,7 @@ module.exports.handle = async function (event, context, callback) {
         <table class="table table-striped">
           <thead>
             <tr>
+              <th scope="col">Place</th>
               <th scope="col">Driver</th>
               <th scope="col">Lap / Time</th>
               <th scope="col">Fastest</th>
@@ -127,7 +128,7 @@ module.exports.handle = async function (event, context, callback) {
               tooltipFnc: x => {
                 const minutes = Math.floor(x / 60000).toString().padStart(2, '0');
                 const seconds = Math.floor((x % 60000) / 1000).toString().padStart(2, '0');
-                const ms = (x % 1000).toString().padEnd(3, '0');
+                const ms = (x % 1000).toString().padStart(3, '0');
                 return minutes + ':' + seconds + '.' + ms;
               },
               anchorToPoint: false,
@@ -189,7 +190,13 @@ function _getDriverBestResults(results) {
 function _accumalteLaps(results) {
   for (const result of results) {
     const accumaltedLaps = [];
-    for (let i = 0; i < result.laps.length; i++) {
+
+    if (result.startTime) {
+      accumaltedLaps[0] = result.startTime;
+    }
+
+    const totalLaps = result.laps.length + accumaltedLaps.length;
+    for (let i = accumaltedLaps.length; i < totalLaps; i++) {
       accumaltedLaps[i] = (accumaltedLaps[i - 1] || 0) + result.laps[i];
     }
     result.accumaltedLaps = accumaltedLaps;
@@ -266,9 +273,10 @@ function _xTicks(race) {
 }
 
 
-function _resultRow(result) {
+function _resultRow(result, place) {
   return `
     <tr>
+      <td>${place}</td>
       <th scope="row">${result.name}</th>
       <td>${result.totalLaps}L ${_msToTimeFormat(result.totalTime)}</td >
       <td>${_msToTimeFormat(result.fastestLap)}</td>

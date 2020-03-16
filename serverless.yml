@@ -5,6 +5,8 @@ frameworkVersion: ">=1.1.0 <2.0.0"
 provider:
   name: aws
   runtime: nodejs12.x
+  environment:
+    STAGE: ${opt:stage, self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -44,14 +46,14 @@ resources:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
-        TableName: 'nlt-results'
+        TableName: '${opt:stage, self:provider.stage}-nlt-results'
         AttributeDefinitions:
-          - AttributeName: name
+          - AttributeName: race
             AttributeType: S
           - AttributeName: sortKey
             AttributeType: S
         KeySchema:
-          - AttributeName: name
+          - AttributeName: race
             KeyType: HASH
           - AttributeName: sortKey
             KeyType: RANGE

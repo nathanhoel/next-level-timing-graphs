@@ -3,9 +3,10 @@ const AWS = require('aws-sdk');
 const bs58 = require('bs58');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const TABLE_NAME = `${process.env.STAGE}-nlt-results`;
 const RACE_ID = '93c856b2-027a-40f6-b06d-ee0c90068643';
 
-module.exports.handle = async (event, context, callback) => {
+module.exports.handle = async function (event, context, callback) {
   const timestamp = new Date().toISOString();
   const { body } = event;
   if (typeof body !== 'string') {
@@ -36,8 +37,9 @@ module.exports.handle = async (event, context, callback) => {
     results.push({
       id: uuid.v4(),
       createdAt: timestamp,
+      race: RACE_ID,
+      sortKey: `${name}_${(10000 - parseInt(totalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(totalTime).toString().padStart(10, '0')}`,
       name,
-      sortKey: `${RACE_ID}_${(10000 - parseInt(totalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(totalTime).toString().padStart(10, '0')}`,
       totalLaps,
       totalTime: _timeStringToMS(totalTime),
       fastestLap: _timeStringToMS(fastestLap),
@@ -48,7 +50,7 @@ module.exports.handle = async (event, context, callback) => {
 
   for (const result of results) {
     const params = {
-      TableName: 'nlt-results',
+      TableName: TABLE_NAME,
       Item: result,
     };
 

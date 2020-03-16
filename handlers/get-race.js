@@ -109,6 +109,7 @@ module.exports.handle = async function (event, context, callback) {
               },
               anchorToPoint: false,
               appendToBody: true,
+              pointClass: 'ct-slice-pie',
             }),
             Chartist.plugins.ctAxisRight({
               axisY: {
@@ -133,7 +134,8 @@ module.exports.handle = async function (event, context, callback) {
               cx: data.x,
               cy: data.y,
               r: 6,
-            }, 'ct-point');
+              'ct:meta': data.meta,
+            }, 'ct-slice-pie');
 
             data.element.replace(dot);
           }

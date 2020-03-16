@@ -76,6 +76,7 @@ module.exports.handle = async function (event, context, callback) {
             onlyInteger: true,
             showGrid: true,
             showLabel: false,
+            low: 0,
           },
           chartPadding: {
             top: 10,

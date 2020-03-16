@@ -65,6 +65,10 @@ module.exports.handle = async function (event, context, callback) {
         .ct-label {
           font-size: 0.9em;
         }
+
+        .total-laps {
+          border-right: solid 1px #DDDDDD;
+        }
       </style>
     </head>
     <body>

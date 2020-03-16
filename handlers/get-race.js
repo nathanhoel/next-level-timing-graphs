@@ -70,15 +70,11 @@ module.exports.handle = async function (event, context, callback) {
           },
           axisX: {
             type: Chartist.FixedScaleAxis,
-            ticks: ${JSON.stringify(_ticks(race))},
+            ticks: ${JSON.stringify(_xTicks(race))},
             labelInterpolationFnc: function(value) {
-              const minutes = Math.floor(value / 60000);
-              const minutesFormat = minutes.toString().padStart(2, '0');
-              if (value / 60000 > minutes) {
-                return  minutesFormat + ':30';
-              }
-
-              return minutesFormat + ':00';
+              const minutes = Math.floor(value / 60000).toString().padStart(2, '0');
+              const seconds = Math.floor((value % 60000) / 1000).toString().padStart(2, '0');
+              return minutes + ':' + seconds;
             }
           },
           axisY: {
@@ -135,7 +131,7 @@ module.exports.handle = async function (event, context, callback) {
             var dot = new Chartist.Svg('circle', {
               cx: data.x,
               cy: data.y,
-              r: 7,
+              r: 6.5,
               'ct:meta': data.meta,
             }, 'ct-slice-pie');
 
@@ -235,9 +231,9 @@ function _series(results) {
   return series;
 }
 
-function _ticks(race) {
+function _xTicks(race) {
   const ticks = [];
-  for (let ms = 0; ms <= race.length + 30000; ms += 30000) {
+  for (let ms = 0; ms <= race.length + 30000; ms += 15000) {
     ticks.push(ms);
   }
 

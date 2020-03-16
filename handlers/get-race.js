@@ -53,9 +53,9 @@ module.exports.handle = async function (event, context, callback) {
         }
 
         .ct-axis-title {
-          font-size: 0.6em;
+          font-size: 0.7em;
           font-weight: 600;
-          fill: #444444;
+          fill: #666666;
         }
 
         .ct-label.ct-horizontal.ct-end {
@@ -63,7 +63,7 @@ module.exports.handle = async function (event, context, callback) {
         }
 
         .ct-label {
-          font-size: 1em;
+          font-size: 0.9em;
         }
       </style>
     </head>
@@ -72,11 +72,11 @@ module.exports.handle = async function (event, context, callback) {
         <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col" style="width: 10%">Place</th>
-              <th scope="col" style="width: 30%">Driver</th>
+              <th scope="col" style="width: 5%"></th>
+              <th scope="col" style="width: 45%">Driver</th>
               <th scope="col" style="width: 20%">Lap / Time</th>
-              <th scope="col" style="width: 20%">Fastest</th>
-              <th scope="col" style="width: 20%">Average</th>
+              <th scope="col" style="width: 15%">Fastest</th>
+              <th scope="col" style="width: 15%">Average</th>
             </tr>
           </thead>
           <tbody>
@@ -92,8 +92,8 @@ module.exports.handle = async function (event, context, callback) {
         var chart = new Chartist.Line('.ct-chart', {
           series: ${JSON.stringify(_series(bestResults))}
         }, {
-          width: '${75 * maxLaps}px',
-          height: '${32 * bestResults.length}px',
+          width: '${65 * maxLaps}px',
+          height: '${30 * bestResults.length}px',
           lineSmooth: false,
           onlyInteger: false,
           low: 0,
@@ -283,7 +283,7 @@ function _resultRow(result, place) {
     <tr>
       <td>${place}</td>
       <th scope="row">${result.name}</th>
-      <td>${result.totalLaps}L ${_msToTimeFormat(result.totalTime)}</td >
+      <td class="total-laps">${result.totalLaps}L ${_msToTimeFormat(result.totalTime)}</td >
       <td>${_msToTimeFormat(result.fastestLap)}</td>
       <td>${_msToTimeFormat(Math.floor(result.totalTime / result.totalLaps))}</td>
     </tr>

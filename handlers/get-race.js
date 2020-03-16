@@ -5,15 +5,18 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = `${process.env.STAGE}-nlt-results`;
 
 module.exports.handle = async function (event, context, callback) {
-  const params = {
+  const race = {
+    id: event.pathParameters.id,
+    length: 180000,
+  };
+
+  const result = await dynamoDb.query({
     TableName: TABLE_NAME,
     KeyConditionExpression: 'race = :hkey',
     ExpressionAttributeValues: {
-      ':hkey': event.pathParameters.id,
+      ':hkey': race.id,
     }
-  };
-
-  const result = await dynamoDb.query(params).promise();
+  }).promise();
   const allResults = result.Items;
 
   const bestResults = _getDriverBestResults(allResults);
@@ -40,7 +43,7 @@ module.exports.handle = async function (event, context, callback) {
         var chart = new Chartist.Line('.ct-chart', {
           series: ${JSON.stringify(_series(bestResults))}
         }, {
-          width: '${50 * maxLaps[]}px',
+          width: '${50 * maxLaps}px',
           height: '${25 * bestResults.length}px',
           lineSmooth: false,
           onlyInteger: false,
@@ -51,7 +54,7 @@ module.exports.handle = async function (event, context, callback) {
           low: 1,
           axisX: {
             type: Chartist.FixedScaleAxis,
-            ticks: [0,30000,60000,90000,120000,150000,180000,210000],
+            ticks: ${JSON.stringify(_ticks(race))},
             labelInterpolationFnc: function(value) {
               const minutes = Math.floor(value / 60000);
               const minutesFormat = minutes.toString().padStart(2, '0');
@@ -158,4 +161,13 @@ function _series(results) {
   }
 
   return series;
+}
+
+function _ticks(race) {
+  const ticks = [];
+  for (let ms = 0; ms <= race.length + 30000; ms += 30000) {
+    ticks.push(ms);
+  }
+
+  return ticks;
 }

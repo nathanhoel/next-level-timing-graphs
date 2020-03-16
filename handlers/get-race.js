@@ -22,9 +22,9 @@ module.exports.handle = async function (event, context, callback) {
       <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
     </head>
     <body>
-      <div class="ct-chart"></div>
-      ${JSON.stringify(results)}
-
+      <div style="width: 80%;">
+        <div class="ct-chart"></div>
+      </div>
       <script>
         var chart = new Chartist.Line('.ct-chart', {
 
@@ -35,6 +35,7 @@ module.exports.handle = async function (event, context, callback) {
           ]
         }, {
           fullWidth: true,
+          height: '75px',
           lineSmooth: false,
           onlyInteger: false,
           chartPadding: {

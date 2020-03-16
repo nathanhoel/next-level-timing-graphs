@@ -21,7 +21,7 @@ module.exports.handle = async function (event, context, callback) {
       h1 { color: #73757d; }
     </style>
     <body>
-      ${JSON.parse(results)}
+      ${JSON.stringify(results)}
     </body>
   </html>`;
 

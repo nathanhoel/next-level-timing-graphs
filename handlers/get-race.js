@@ -168,7 +168,7 @@ function _series(results) {
   const numDrivers = results.length;
   const series = [];
   for (const result of results) {
-    const set = result.rankedLaps.map(lap => ({ x: lap.time, y: numDrivers - lap.position + 1 }));
+    const set = result.rankedLaps.map((lap, i) => ({ x: lap.time, meta: result.laps[i], la y: numDrivers - lap.position + 1 }));
     series.push(set);
   }
 

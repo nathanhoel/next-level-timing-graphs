@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const chartistPointLabels = require('../lib/chartist-pointlabels');
+const chartistRight = require('../lib/chartist-right');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = `${process.env.STAGE}-nlt-results`;
@@ -35,6 +36,9 @@ module.exports.handle = async function (event, context, callback) {
       <script>
         ${chartistPointLabels}
         InitChartistPointLabels(Chartist);
+
+        ${chartistPointLabels}
+        InitChartistRight(Chartist);
       </script>
     </head>
     <body>
@@ -92,10 +96,23 @@ module.exports.handle = async function (event, context, callback) {
                 const ms = (x % 1000).toString().padEnd(3, '0');
                 return minutes + ':' + seconds + '.' + ms;
               },
-              class: 'chartist-everlaps-tooltip',
               anchorToPoint: false,
               appendToBody: true,
-            })
+            }),
+            Chartist.plugins.ctAxisRight({
+              axisY: {
+                axisTitle: 'Goals',
+                axisClass: 'ct-axis-title',
+                offset: {
+                  x: 0,
+                  y: 0
+                },
+                textAnchor: 'middle',
+                flipTitle: false,
+                leftDrivers: ${JSON.stringify(_startDrivers(bestResults))},
+                rightDrivers: ${JSON.stringify(_endDrivers(bestResults))},
+              }
+            }),
           ],
         });
       </script>
@@ -162,6 +179,22 @@ function _rankLaps(results) {
       }
     }
   }
+}
+
+function _startDrivers(results) {
+  const startDrivers = [];
+  for (const result of results) {
+    startDrivers[result.rankedLaps[0].position] = result.name;
+  }
+  return startDrivers;
+}
+
+function _endDrivers(results) {
+  const endDrivers = [];
+  for (const result of results) {
+    endDrivers[result.rankedLaps[result.rankedLaps.length - 1].position] = result.name;
+  }
+  return endDrivers;
 }
 
 function _series(results) {

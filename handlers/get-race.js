@@ -133,7 +133,7 @@ module.exports.handle = async function (event, context, callback) {
               cx: data.x,
               cy: data.y,
               r: 6,
-            }, 'ct-slice-pie');
+            }, 'ct-point');
 
             data.element.replace(dot);
           }

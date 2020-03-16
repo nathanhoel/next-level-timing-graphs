@@ -47,6 +47,7 @@ module.exports.handle = async function (event, context, callback) {
     };
 
     const totalLapTime = result.laps.reduce((total, cur) => { total + cur }, 0);
+    console.log(totalLapTime);
     result.startTime = result.totalTime - totalLapTime;
 
     results.push(result);

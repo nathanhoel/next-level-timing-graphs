@@ -24,6 +24,7 @@ module.exports.handle = async function (event, context, callback) {
   _accumalteLaps(bestResults);
   _rankLaps(bestResults);
 
+  const hasLapZero = !!bestResults[0].startTime;
   const maxLaps = Math.max.apply(Math, bestResults.map(result => result.laps.length));
 
   const html = `
@@ -121,7 +122,7 @@ module.exports.handle = async function (event, context, callback) {
             Chartist.plugins.ctPointLabels({
               textAnchor: 'middle',
               labelInterpolationFnc: (value) => {
-                return (value == 0) ? "" : value;
+                return (value == 0) ? "" : value - ${hasLapZero ? 1 : 0};
               }
             }),
             Chartist.plugins.tooltip({

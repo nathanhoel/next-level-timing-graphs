@@ -102,10 +102,10 @@ function _rankLaps(results) {
     result.rankedLaps = [];
   }
 
-  for (let i = 0; i < maxLaps; i++) {
+  for (let lapNum = 0; lapNum < maxLaps; lapNum++) {
     const thisLapForAllDrivers = [];
     for (const result of results) {
-      const time = result.accumaltedLaps[i];
+      const time = result.accumaltedLaps[lapNum];
       if (!time) {
         continue;
       }
@@ -118,6 +118,13 @@ function _rankLaps(results) {
     thisLapForAllDrivers.sort((a, b) => a.time - b.time);
     for (let i = 0; i < thisLapForAllDrivers.length; i++) {
       thisLapForAllDrivers[i].position = i + 1;
+    }
+
+    // add a fake 0th lap
+    if (lapNum === 0) {
+      for (const result of results) {
+        result.rankedLaps.unshift({ time: 0, position: result.rankedLaps[0].position });
+      }
     }
   }
 }

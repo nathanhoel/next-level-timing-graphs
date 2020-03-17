@@ -326,7 +326,7 @@ function _resultRow(result, place) {
         </div>
         <div class="driver-name">${result.name}</div>
       </th>
-      <td class="stat-break">${result.totalLaps}L ${_msToTimeFormat(result.totalTime)}</td >
+      <td class="stat-break">${result.totalLaps}L ${_msToTimeFormat(result.totalTime, true)}</td >
       <td>${_msToTimeFormat(result.fastestLap)}</td>
       <td class="stat-break">${_msToTimeFormat(Math.floor((result.totalTime - (result.startTime || 0)) / result.totalLaps))}</td>
       <td>${_msToTimeFormat(result.overallFastestLap)}</td>
@@ -334,14 +334,11 @@ function _resultRow(result, place) {
   `;
 }
 
-function _msToTimeFormat(ms, displayMs = true) {
+function _msToTimeFormat(ms, displayMinutes = false) {
   const minutesLabel = Math.floor(ms / 60000).toString().padStart(2, '0');
-  const secondsLabel = Math.floor((ms % 60000) / 1000).toString().padStart(2, '0');
+  const leftoverSeconds = displayMinutes ? ms % 60000 : ms;
+  const secondsLabel = Math.floor(leftoverSeconds / 1000).toString().padStart(2, '0');
   const msLabel = (ms % 1000).toString().padEnd(3, '0');
-  let label = minutesLabel + ':' + secondsLabel;
-  if (displayMs) {
-    label += '.' + msLabel
-  }
-
-  return label;
+  const label = minutesLabel + ':' + secondsLabel + '.' + msLabel;
+  return displayMinutes ? label : label.split(':')[1];
 }

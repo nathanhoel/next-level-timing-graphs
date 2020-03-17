@@ -50,6 +50,7 @@ module.exports.handle = async function (event, context, callback) {
       <style>
         body {
           font-family: Montserrat,sans-serif;
+          margin: 50px;
         }
 
         .ct-axis-title {
@@ -73,7 +74,7 @@ module.exports.handle = async function (event, context, callback) {
         .position-outer {
           position: relative;
           float: left;
-          margin: 0 10;
+          margin-right: 15px;
         }
 
         .position-border-box {
@@ -96,7 +97,7 @@ module.exports.handle = async function (event, context, callback) {
       </style>
     </head>
     <body>
-      <div style="margin: 40px; width: 90%;">
+      <div>
         <table class="table table-striped">
           <thead>
             <tr>
@@ -112,14 +113,14 @@ module.exports.handle = async function (event, context, callback) {
         </table>
       </div>
 
-      <div style="margin: 40px; width: 90%; overflow-x: auto;">
+      <div style="overflow-x: auto;">
         <div class="ct-chart" style=""></div>
       </div>
       <script>
         var chart = new Chartist.Line('.ct-chart', {
           series: ${JSON.stringify(_series(bestResults))}
         }, {
-          width: '${65 * maxLaps}px',
+          width: '${60 * maxLaps}px',
           height: '${30 * bestResults.length}px',
           lineSmooth: false,
           onlyInteger: false,

@@ -101,11 +101,11 @@ module.exports.handle = async function (event, context, callback) {
         <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col" style="width: 40%">Driver</th>
+              <th scope="col" style="width: 50%">Driver</th>
               <th scope="col" style="width: 20%">Lap / Time</th>
-              <th scope="col" style="width: 15%">Fastest</th>
-              <th scope="col" style="width: 15%">Average</th>
-              <th scope="col" style="width: 15%">Overall Fastest</th>
+              <th scope="col" style="width: 10%">Fastest</th>
+              <th scope="col" style="width: 10%">Average</th>
+              <th scope="col" style="width: 10%">Overall Fastest</th>
             </tr>
           </thead>
           <tbody>
@@ -114,7 +114,7 @@ module.exports.handle = async function (event, context, callback) {
         </table>
       </div>
 
-      <div style="overflow-x: auto;">
+      <div style="margin-top: 50px; overflow-x: auto;">
         <div class="ct-chart" style=""></div>
       </div>
       <script>

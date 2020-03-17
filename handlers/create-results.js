@@ -30,10 +30,14 @@ module.exports.handle = async function (event, context, callback) {
     .replace(/\r/g, "\n")
     .split(/\n{2,}/g);
 
+  console.log(rawResults);
+  
   const results = [];
   for (const rawResult of rawResults) {
     let [, name, totalLaps, , rawTotalTime, rawFastestLap, , , ...rawLaps] = rawResult.split(/\n/g);
 
+    console.log(rawResult);
+    
     const totalTime = _timeStringToMS(rawTotalTime);
     const laps = rawLaps.map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
     const totalLapTime = laps.reduce((total, cur) => total + cur, 0);

@@ -308,7 +308,13 @@ function _rankLaps(results) {
 }
 
 function _sortByPlace(results) {
-  results.sort((a, b) => a.rankedLaps[a.rankedLaps.length - 1].position - b.rankedLaps[b.rankedLaps.length - 1].position);
+  results.sort((a, b) => {
+    if (a.totalLaps !== b.totalLaps) {
+      return b.totalLaps - a.totalLaps;
+    }
+
+    return a.rankedLaps[a.rankedLaps.length - 1].position - b.rankedLaps[b.rankedLaps.length - 1].position
+  });
 }
 
 function _startDrivers(results) {

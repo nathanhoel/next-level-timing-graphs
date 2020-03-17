@@ -350,7 +350,11 @@ function _msToTimeFormat(ms, displayMinutes = false) {
 
 function _lapTable(results, maxLaps) {
   const headers = results.map(result => `<th scope="col">${result.name}</th>`);
-  const rows = [...Array(maxLaps).keys()].map(lapNum => _lapRow(results, lapNum));
+  const rows = results[0].rankedLaps
+    .map((lap, index) => ({ lapNum: lap.lapNum, index }))
+    .filter(lap => lap.lapNum !== '')
+    .map(lap => _lapRow(results, lap));
+
   return `
     <table class="table table-striped">
       <thead>
@@ -366,8 +370,8 @@ function _lapTable(results, maxLaps) {
   `;
 }
 
-function _lapRow(results, lapNum) {
-  const lapColumns = results.map(result => `<td>${result.rankedLaps[lapNum].lapTime}</td>`);
+function _lapRow(results, { lapNum, index }) {
+  const lapColumns = results.map(result => `<td>${result.rankedLaps[index].lapTime}</td>`);
   return `
     <tr>
       <th scope="row">${lapNum}</th>

@@ -108,6 +108,11 @@ module.exports.handle = async function (event, context, callback) {
         .lap-table-time {
           float: left;
         }
+
+        .lap-table-position.personal-fastest-lap {
+          color: #874ff4;
+          font-weight: 600;
+        }
       </style>
     </head>
     <body>
@@ -385,11 +390,11 @@ function _lapTable(results, maxLaps) {
 
 function _lapRow(results, { lapNum, index }) {
   const lapColumns = results.map(result => {
-
+    const currentLap = result.rankedLaps[index];
     return `
       <td>
-        <div class="lap-table-position">${result.rankedLaps[index].position}</div>
-        <div class="lap-table-time">${_msToTimeFormat(result.rankedLaps[index].lapTime)}</div>
+        <div class="lap-table-position">${currentResult.position}</div>
+        <div class="lap-table-time ${currentLap.lapTime === result.fastestLap ? 'personal-fastest-lap' : ''}">${_msToTimeFormat(currentLap.lapTime)}</div>
       </td>
     `;
   });

@@ -27,6 +27,7 @@ module.exports.handle = async function (event, context, callback) {
   // split the results into header and sets
   var [rawHeaders, ...rawResults] = rawData
     .replace(/\n\r/g, "\n")
+    .replace(/\r\n/g, "\n")
     .replace(/\r/g, "\n")
     .split(/\n{2,}/g);
 

@@ -40,7 +40,7 @@ module.exports.handle = async function (event, context, callback) {
     console.log(rawResult);
     
     const totalTime = _timeStringToMS(rawTotalTime);
-    const laps = rawLaps.map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
+    const laps = rawLaps.filter(rawLap => !!rawLap).map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
     const totalLapTime = laps.reduce((total, cur) => total + cur, 0);
     const startTime = totalTime - totalLapTime;
 

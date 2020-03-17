@@ -1,6 +1,5 @@
 const uuid = require('uuid');
 const AWS = require('aws-sdk');
-const bs58 = require('bs58');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = `${process.env.STAGE}-nlt-results`;
@@ -21,8 +20,7 @@ module.exports.handle = async function (event, context, callback) {
 
   console.log(body);
   
-  const dataBytes = bs58.decode(body);
-  const rawData = dataBytes.toString('utf8');
+  const rawData = Buffer.from(body, 'base64').toString('utf-8')
   
   console.log(rawData);
   

@@ -400,12 +400,17 @@ function _lapTable(results, fastestLap) {
 function _lapRow(results, { lapNum, index }, fastestLap) {
   const lapColumns = results.map(result => {
     const currentLap = result.rankedLaps[index];
-    return `
-      <td>
-        <div class="lap-table-position">${currentLap.position}</div>
-        <div class="lap-table-time ${currentLap.lapTime === result.fastestLap ? 'personal-fastest-lap' : ''} ${currentLap.lapTime === fastestLap ? 'fastest-lap' : ''}">${_msToTimeFormat(currentLap.lapTime)}</div>
-      </td>
-    `;
+
+    if (currentLap) {
+      return `
+        <td>
+          <div class="lap-table-position">${currentLap.position}</div>
+          <div class="lap-table-time ${currentLap.lapTime === result.fastestLap ? 'personal-fastest-lap' : ''} ${currentLap.lapTime === fastestLap ? 'fastest-lap' : ''}">${_msToTimeFormat(currentLap.lapTime)}</div>
+        </td>
+      `;
+    }
+
+    return '<td></td>';
   });
   return `
     <tr>

@@ -367,7 +367,7 @@ function _lapTable(results, maxLaps) {
 }
 
 function _lapRow(results, lapNum) {
-  const lapColumns = results.map(result => `<td>${result.rankedLap[lapNum].lapTime}</td>`);
+  const lapColumns = results.map(result => `<td>${result.rankedLaps[lapNum].lapTime}</td>`);
   return `
     <tr>
       <th scope="row">${lapNum}</th>

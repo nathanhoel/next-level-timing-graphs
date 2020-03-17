@@ -109,7 +109,7 @@ module.exports.handle = async function (event, context, callback) {
           float: left;
         }
 
-        .lap-table-position.personal-fastest-lap {
+        .lap-table-time.personal-fastest-lap {
           color: #874ff4;
           font-weight: 600;
         }

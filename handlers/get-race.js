@@ -214,7 +214,7 @@ module.exports.handle = async function (event, context, callback) {
                 textAnchor: 'middle',
                 flipTitle: false,
                 leftDrivers: ${JSON.stringify(_startDrivers(bestResults))},
-                rightDrivers: ${JSON.stringify(_endDrivers(bestResults))},
+                rightDrivers: ${JSON.stringify(bestResults.map(result => result.name))},
               }
             }),
           ],
@@ -323,14 +323,6 @@ function _startDrivers(results) {
     startDrivers[result.rankedLaps[0].position - 1] = result.name;
   }
   return startDrivers;
-}
-
-function _endDrivers(results) {
-  const endDrivers = [];
-  for (const result of results) {
-    endDrivers[result.rankedLaps[result.rankedLaps.length - 1].position - 1] = result.name;
-  }
-  return endDrivers;
 }
 
 function _series(results) {

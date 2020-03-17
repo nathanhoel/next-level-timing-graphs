@@ -17,8 +17,6 @@ module.exports.handle = async function (event, context, callback) {
     });
     return;
   }
-
-  console.log(body);
   
   const rawData = Buffer.from(body, 'base64').toString('utf-8')
   
@@ -30,14 +28,20 @@ module.exports.handle = async function (event, context, callback) {
     .replace(/\r\n/g, "\n")
     .replace(/\r/g, "\n")
     .split(/\n{2,}/g);
-
-  console.log(rawResults);
   
   const results = [];
   for (const rawResult of rawResults) {
     let [, name, totalLaps, , rawTotalTime, rawFastestLap, , , ...rawLaps] = rawResult.split(/\n/g);
-
-    console.log(rawResult);
+    
+    if (rawLaps.length === 1 && rawLaps.split(' ').length > 3) {
+      console.error('All Laps not Showing');
+      callback(null, {
+        statusCode: 400,
+        headers: { 'Content-Type': 'text/plain' },
+        body: 'Must show all laps!',
+      });
+      return; 
+    }
     
     const totalTime = _timeStringToMS(rawTotalTime);
     const laps = rawLaps.filter(rawLap => !!rawLap).map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
@@ -75,12 +79,10 @@ module.exports.handle = async function (event, context, callback) {
     await dynamoDb.put(params).promise();
   };
 
-  const response = {
+  callback(null, {
     statusCode: 200,
     body: JSON.stringify(results),
-  };
-
-  callback(null, response);
+  });
 }
 
 function _timeStringToMS(duration) {

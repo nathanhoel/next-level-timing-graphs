@@ -94,6 +94,20 @@ module.exports.handle = async function (event, context, callback) {
         .driver-name {
           float: left;
         }
+
+        .lap-table-position {
+          float: left;
+          margin-right: 10px;
+          padding: 0 8px;
+          border: solid 1px #BBB;
+          background-color: #DDD;
+          border-radius: 4px;
+          color: #666;
+        }
+
+        .lap-table-time {
+          float: left;
+        }
       </style>
     </head>
     <body>
@@ -167,10 +181,9 @@ module.exports.handle = async function (event, context, callback) {
             Chartist.plugins.tooltip({
               tooltipFnc: meta => {
                 const x = Chartist.deserialize(meta).lapTime;
-                const minutes = Math.floor(x / 60000).toString().padStart(2, '0');
-                const seconds = Math.floor((x % 60000) / 1000).toString().padStart(2, '0');
+                const seconds = Math.floor(x / 1000).toString().padStart(2, '0');
                 const ms = (x % 1000).toString().padStart(3, '0');
-                return minutes + ':' + seconds + '.' + ms;
+                return seconds + '.' + ms;
               },
               anchorToPoint: false,
               appendToBody: true,
@@ -371,7 +384,15 @@ function _lapTable(results, maxLaps) {
 }
 
 function _lapRow(results, { lapNum, index }) {
-  const lapColumns = results.map(result => `<td>${result.rankedLaps[index].lapTime}</td>`);
+  const lapColumns = results.map(result => {
+
+    return `
+      <td>
+        <div class="lap-table-position">${result.rankedLaps[index].position}</div>
+        <div class="lap-table-time">${_msToTimeFormat(result.rankedLaps[index].lapTime)}</div>
+      </td>
+    `;
+  });
   return `
     <tr>
       <th scope="row">${lapNum}</th>

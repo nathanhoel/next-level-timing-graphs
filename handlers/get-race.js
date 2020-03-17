@@ -186,7 +186,7 @@ module.exports.handle = async function (event, context, callback) {
           },
           chartPadding: {
             top: 10,
-            right: 90,
+            right: 120,
             bottom: 0,
             left: 50
           },

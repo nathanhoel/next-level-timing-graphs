@@ -5,6 +5,8 @@ frameworkVersion: ">=1.1.0 <2.0.0"
 provider:
   name: aws
   runtime: nodejs12.x
+  environment:
+    STAGE: ${opt:stage, self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -14,16 +16,9 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/nlt-results"
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${opt:stage, self:provider.stage}-nlt-results"
 
 functions:
-  landingPage:
-    handler: handlers/handler.landingPage
-    events:
-      - http:
-          method: get
-          path: landing-page
-
   createResult:
     handler: handlers/create-results.handle
     events:
@@ -31,20 +26,27 @@ functions:
           method: post
           path: results
 
+  getResult:
+    handler: handlers/get-race.handle
+    events:
+      - http:
+          method: get
+          path: races/{id}
+
 resources:
   Resources:
     ResulsTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
-        TableName: 'nlt-results'
+        TableName: '${opt:stage, self:provider.stage}-nlt-results'
         AttributeDefinitions:
-          - AttributeName: name
+          - AttributeName: race
             AttributeType: S
           - AttributeName: sortKey
             AttributeType: S
         KeySchema:
-          - AttributeName: name
+          - AttributeName: race
             KeyType: HASH
           - AttributeName: sortKey
             KeyType: RANGE

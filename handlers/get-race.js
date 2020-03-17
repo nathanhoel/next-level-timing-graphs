@@ -123,6 +123,9 @@ module.exports.handle = async function (event, context, callback) {
     </head>
     <body>
       <div>
+        <img src="https://hoel-file-dump.s3.amazonaws.com/BinSentry-Raceway.png" style="margin-left: auto; margin-right: auto; display: block; width: 400px;">
+      </div>
+      <div style="margin-top: 50px;">
         <table class="table table-striped">
           <thead>
             <tr>

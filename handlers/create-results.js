@@ -19,9 +19,13 @@ module.exports.handle = async function (event, context, callback) {
     return;
   }
 
+  console.log(body);
+  
   const dataBytes = bs58.decode(body);
   const rawData = dataBytes.toString('utf8');
-
+  
+  console.log(rawData);
+  
   // split the results into header and sets
   var [rawHeaders, ...rawResults] = rawData
     .replace(/\n\r/g, "\n")
@@ -62,7 +66,9 @@ module.exports.handle = async function (event, context, callback) {
       TableName: TABLE_NAME,
       Item: result,
     };
-
+    
+    console.log(params);
+    
     await dynamoDb.put(params).promise();
   };
 

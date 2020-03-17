@@ -67,7 +67,7 @@ module.exports.handle = async function (event, context, callback) {
           font-size: 0.9em;
         }
 
-        .total-laps {
+        .stat-break {
           border-right: solid 1px #DDDDDD;
         }
 
@@ -101,10 +101,11 @@ module.exports.handle = async function (event, context, callback) {
         <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col" style="width: 50%">Driver</th>
+              <th scope="col" style="width: 40%">Driver</th>
               <th scope="col" style="width: 20%">Lap / Time</th>
               <th scope="col" style="width: 15%">Fastest</th>
               <th scope="col" style="width: 15%">Average</th>
+              <th scope="col" style="width: 15%">Overall Fastest</th>
             </tr>
           </thead>
           <tbody>
@@ -217,7 +218,16 @@ module.exports.handle = async function (event, context, callback) {
 function _getDriverBestResults(results) {
   const bestResults = [];
   for (let i = 0; i < results.length; i++) {
-    (i === 0 || results[i].name !== results[i - 1].name) && bestResults.push(results[i]);
+    if (i === 0 || results[i].name !== results[i - 1].name) {
+      const bestResult = results[i];
+      bestResult.overallFastestLap = bestResult.fastestLap;
+      bestResults.push(results[i]);
+    }
+
+    const currentBestResult = bestResults[bestResults.length - 1];
+    if (results[i].fastestLap < currentBestResult.overallFastestLap) {
+      currentBestResult.overallFastestLap = results[i].fastestLap;
+    }
   }
   return bestResults;
 }
@@ -316,9 +326,10 @@ function _resultRow(result, place) {
         </div>
         <div class="driver-name">${result.name}</div>
       </th>
-      <td class="total-laps">${result.totalLaps}L ${_msToTimeFormat(result.totalTime)}</td >
+      <td class="stat-break">${result.totalLaps}L ${_msToTimeFormat(result.totalTime)}</td >
       <td>${_msToTimeFormat(result.fastestLap)}</td>
-      <td>${_msToTimeFormat(Math.floor((result.totalTime - (result.startTime || 0)) / result.totalLaps))}</td>
+      <td class="stat-break">${_msToTimeFormat(Math.floor((result.totalTime - (result.startTime || 0)) / result.totalLaps))}</td>
+      <td>${_msToTimeFormat(result.overallFastestLap)}</td>
     </tr>
   `;
 }

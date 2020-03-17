@@ -25,8 +25,9 @@ module.exports.handle = async function (event, context, callback) {
   _rankLaps(bestResults);
   _sortByPlace(bestResults);
 
-  const hasLapZero = !!bestResults[0].startTime;
   const maxLaps = Math.max.apply(Math, bestResults.map(result => result.laps.length));
+  const fastestLap = Math.min.apply(Math, bestResults.map(result => result.fastestLap));
+  const overallFastestLap = Math.min.apply(Math, bestResults.map(result => result.overallFastestLap));
 
   const html = `
   <html>
@@ -110,8 +111,12 @@ module.exports.handle = async function (event, context, callback) {
         }
 
         .lap-table-time.personal-fastest-lap {
-          color: #874ff4;
+          color: #5a389e;
           font-weight: 600;
+        }
+
+        .fastest-lap {
+          color:
         }
       </style>
     </head>
@@ -128,7 +133,7 @@ module.exports.handle = async function (event, context, callback) {
             </tr>
           </thead>
           <tbody>
-            ${bestResults.map((result, index) => _resultRow(result, index + 1)).join('')}
+            ${bestResults.map((result, index) => _resultRow(result, index + 1, fastestLap, overallFastestLap)).join('')}
           </tbody>
         </table>
       </div>
@@ -339,7 +344,7 @@ function _xTicks(race) {
 }
 
 
-function _resultRow(result, place) {
+function _resultRow(result, place, fastestLap, overallFastestLap) {
   return `
     <tr>
       <th scope="row">
@@ -350,9 +355,9 @@ function _resultRow(result, place) {
         <div class="driver-name">${result.name}</div>
       </th>
       <td class="stat-break">${result.totalLaps}L ${_msToTimeFormat(result.totalTime, true)}</td >
-      <td>${_msToTimeFormat(result.fastestLap)}</td>
+      <td class="${fastestLap === result.fastestLap ? 'fastest-lap' : ''}">${_msToTimeFormat(result.fastestLap)}</td>
       <td class="stat-break">${_msToTimeFormat(Math.floor((result.totalTime - (result.startTime || 0)) / result.totalLaps))}</td>
-      <td>${_msToTimeFormat(result.overallFastestLap)}</td>
+      <td class="${overallFastestLap === result.overallFastestLap ? 'fastest-lap' : ''}">${_msToTimeFormat(result.overallFastestLap)}</td>
     </tr>
   `;
 }
@@ -393,7 +398,7 @@ function _lapRow(results, { lapNum, index }) {
     const currentLap = result.rankedLaps[index];
     return `
       <td>
-        <div class="lap-table-position">${currentResult.position}</div>
+        <div class="lap-table-position">${currentLap.position}</div>
         <div class="lap-table-time ${currentLap.lapTime === result.fastestLap ? 'personal-fastest-lap' : ''}">${_msToTimeFormat(currentLap.lapTime)}</div>
       </td>
     `;

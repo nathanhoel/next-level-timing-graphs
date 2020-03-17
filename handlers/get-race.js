@@ -119,6 +119,10 @@ module.exports.handle = async function (event, context, callback) {
           color: #5a389e;
           font-weight: 700;
         }
+
+        text.ct-label {
+          font-weight:1000;
+        }
       </style>
     </head>
     <body>

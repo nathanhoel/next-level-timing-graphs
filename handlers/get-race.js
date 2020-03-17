@@ -154,7 +154,7 @@ module.exports.handle = async function (event, context, callback) {
         var chart = new Chartist.Line('.ct-chart', {
           series: ${JSON.stringify(_series(bestResults))}
         }, {
-          width: '${60 * maxLaps}px',
+          width: '${Math.max(1500, 60 * maxLaps)}px',
           height: '${30 * bestResults.length}px',
           lineSmooth: false,
           onlyInteger: false,

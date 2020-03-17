@@ -69,6 +69,30 @@ module.exports.handle = async function (event, context, callback) {
         .total-laps {
           border-right: solid 1px #DDDDDD;
         }
+
+        .position-outer {
+          position: relative;
+          float: left;
+          margin: 0 10;
+        }
+
+        .position-border-box {
+          position: absolute;
+          width: 2em;
+          height: 100%;
+          border: solid 1px #666;
+          border-radius: 4px;
+          transform: skewX(-30deg);
+        }
+
+        .position-text {
+          margin: 0 0.7em;
+          font-weight: 400;
+        }
+
+        .driver-name {
+          float: left;
+        }
       </style>
     </head>
     <body>
@@ -76,8 +100,7 @@ module.exports.handle = async function (event, context, callback) {
         <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col" style="width: 5%"></th>
-              <th scope="col" style="width: 45%">Driver</th>
+              <th scope="col" style="width: 50%">Driver</th>
               <th scope="col" style="width: 20%">Lap / Time</th>
               <th scope="col" style="width: 15%">Fastest</th>
               <th scope="col" style="width: 15%">Average</th>
@@ -285,8 +308,13 @@ function _xTicks(race) {
 function _resultRow(result, place) {
   return `
     <tr>
-      <td>${place}</td>
-      <th scope="row">${result.name}</th>
+      <th scope="row">
+        <div class="position-outer">
+          <div class="position-border-box"></div>
+          <span class="position-text">${place}</span>
+        </div>
+        <div class="driver-name">${result.name}</div>
+      </th>
       <td class="total-laps">${result.totalLaps}L ${_msToTimeFormat(result.totalTime)}</td >
       <td>${_msToTimeFormat(result.fastestLap)}</td>
       <td>${_msToTimeFormat(Math.floor((result.totalTime - (result.startTime || 0)) / result.totalLaps))}</td>

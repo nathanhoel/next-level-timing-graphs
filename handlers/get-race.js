@@ -117,6 +117,11 @@ module.exports.handle = async function (event, context, callback) {
       <div style="margin-top: 50px; overflow-x: auto;">
         <div class="ct-chart" style=""></div>
       </div>
+
+      <div style="margin-top: 50px; overflow-x: auto;">
+        ${_lapTable(bestResults, maxLaps)}
+      </div>
+
       <script>
         var chart = new Chartist.Line('.ct-chart', {
           series: ${JSON.stringify(_series(bestResults))}
@@ -341,4 +346,32 @@ function _msToTimeFormat(ms, displayMinutes = false) {
   const msLabel = (ms % 1000).toString().padEnd(3, '0');
   const label = minutesLabel + ':' + secondsLabel + '.' + msLabel;
   return displayMinutes ? label : label.split(':')[1];
+}
+
+function _lapTable(results, maxLaps) {
+  const headers = results.map(result => `<th scope="col">${result.name}</th>`);
+  const rows = [...Array(maxLaps).keys()].map(lapNum => _lapRow(results, lapNum));
+  return `
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Lap</th>
+          ${headers.join('')}
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function _lapRow(results, lapNum) {
+  const lapColumns = results.map(result => `<td>${result.rankedLap[lapNum].lapTime}</td>`);
+  return `
+    <tr>
+      <th scope="row">${lapNum}</th>
+      ${lapColumns.join('')}
+    </tr>
+  `;
 }

@@ -111,13 +111,13 @@ module.exports.handle = async function (event, context, callback) {
         }
 
         .lap-table-time.personal-fastest-lap {
-          color: #5a389e;
-          font-weight: 600;
+          color: #874ff4;
+          font-weight: 700;
         }
 
         .fastest-lap {
-          color: #874ff4;
-          font-weight: 600;
+          color: #5a389e;
+          font-weight: 700;
         }
       </style>
     </head>
@@ -144,7 +144,7 @@ module.exports.handle = async function (event, context, callback) {
       </div>
 
       <div style="margin-top: 50px; overflow-x: auto;">
-        ${_lapTable(bestResults, maxLaps)}
+        ${_lapTable(bestResults, fastestLap)}
       </div>
 
       <script>
@@ -372,12 +372,12 @@ function _msToTimeFormat(ms, displayMinutes = false) {
   return displayMinutes ? label : label.split(':')[1];
 }
 
-function _lapTable(results, maxLaps) {
+function _lapTable(results, fastestLap) {
   const headers = results.map(result => `<th scope="col">${result.name}</th>`);
   const rows = results[0].rankedLaps
     .map((lap, index) => ({ lapNum: lap.lapNum, index }))
     .filter(lap => lap.lapNum !== '')
-    .map(lap => _lapRow(results, lap));
+    .map(lap => _lapRow(results, lap, fastestLap));
 
   return `
     <table class="table table-striped">
@@ -394,13 +394,13 @@ function _lapTable(results, maxLaps) {
   `;
 }
 
-function _lapRow(results, { lapNum, index }) {
+function _lapRow(results, { lapNum, index }, fastestLap) {
   const lapColumns = results.map(result => {
     const currentLap = result.rankedLaps[index];
     return `
       <td>
         <div class="lap-table-position">${currentLap.position}</div>
-        <div class="lap-table-time ${currentLap.lapTime === result.fastestLap ? 'personal-fastest-lap' : ''}">${_msToTimeFormat(currentLap.lapTime)}</div>
+        <div class="lap-table-time ${currentLap.lapTime === result.fastestLap ? 'personal-fastest-lap' : ''} ${currentLap.lapTime === fastestLap ? 'fastest-lap' : ''}">${_msToTimeFormat(currentLap.lapTime)}</div>
       </td>
     `;
   });

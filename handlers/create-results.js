@@ -111,13 +111,13 @@ async function _triggerSlackIntegration(newResult, allPastResults) {
     return;
   }
 
-  const isBestResult = _isBestResult(newResult, allPastResults);
-  if (allPastResults.length !== personalPastResults.length && isBestResult) {
+  const isBestResult = allPastResults.length !== personalPastResults.length && _isBestResult(newResult, allPastResults);
+  if (isBestResult) {
     await sendMessage(`*${name}* just took over first place!\n ${_resultText(newResult)}`);
   }
 
-  const isBestLap = _isBestLap(newResult, allPastResults);
-  if (allPastResults.length !== personalPastResults.length && isBestLap) {
+  const isBestLap = allPastResults.length !== personalPastResults.length && _isBestLap(newResult, allPastResults);
+  if (isBestLap) {
     await sendMessage(`*${name}* just beat the overall fastest lap!\n *${msToTimeFormat(fastestLap)} s`);
   }
 

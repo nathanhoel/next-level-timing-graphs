@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const chartistPointLabels = require('../lib/chartist-pointlabels');
 const chartistRight = require('../lib/chartist-right');
+const { msToTimeFormat } = require('../lib/time');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = `${process.env.STAGE}-nlt-results`;
@@ -361,21 +362,12 @@ function _resultRow(result, place, fastestLap, overallFastestLap) {
         </div>
         <div class="driver-name">${result.name}</div>
       </th>
-      <td class="stat-break">${result.totalLaps}L ${_msToTimeFormat(result.totalTime, true)}</td >
-      <td class="${fastestLap === result.fastestLap ? 'fastest-lap' : ''}">${_msToTimeFormat(result.fastestLap)}</td>
-      <td class="stat-break">${_msToTimeFormat(Math.floor((result.totalTime - (result.startTime || 0)) / result.totalLaps))}</td>
-      <td class="${overallFastestLap === result.overallFastestLap ? 'fastest-lap' : ''}">${_msToTimeFormat(result.overallFastestLap)}</td>
+      <td class="stat-break">${result.totalLaps}L ${msToTimeFormat(result.totalTime, true)}</td >
+      <td class="${fastestLap === result.fastestLap ? 'fastest-lap' : ''}">${msToTimeFormat(result.fastestLap)}</td>
+      <td class="stat-break">${msToTimeFormat(Math.floor((result.totalTime - (result.startTime || 0)) / result.totalLaps))}</td>
+      <td class="${overallFastestLap === result.overallFastestLap ? 'fastest-lap' : ''}">${msToTimeFormat(result.overallFastestLap)}</td>
     </tr>
   `;
-}
-
-function _msToTimeFormat(ms, displayMinutes = false) {
-  const minutesLabel = Math.floor(ms / 60000).toString().padStart(2, '0');
-  const leftoverSeconds = displayMinutes ? ms % 60000 : ms;
-  const secondsLabel = Math.floor(leftoverSeconds / 1000).toString().padStart(2, '0');
-  const msLabel = (ms % 1000).toString().padStart(3, '0');
-  const label = minutesLabel + ':' + secondsLabel + '.' + msLabel;
-  return displayMinutes ? label : label.split(':')[1];
 }
 
 function _lapTable(results, fastestLap) {
@@ -408,7 +400,7 @@ function _lapRow(results, { lapNum, index }, fastestLap) {
       return `
         <td>
           <div class="lap-table-position">${currentLap.position}</div>
-          <div class="lap-table-time ${currentLap.lapTime === result.fastestLap ? 'personal-fastest-lap' : ''} ${currentLap.lapTime === fastestLap ? 'fastest-lap' : ''}">${_msToTimeFormat(currentLap.lapTime)}</div>
+          <div class="lap-table-time ${currentLap.lapTime === result.fastestLap ? 'personal-fastest-lap' : ''} ${currentLap.lapTime === fastestLap ? 'fastest-lap' : ''}">${msToTimeFormat(currentLap.lapTime)}</div>
         </td>
       `;
     }

@@ -76,7 +76,7 @@ module.exports.handle = async function (event, context, callback) {
       result.startTime = startTime;
     }
 
-    _triggerSlackIntegration(result, allPastResults);
+    await _triggerSlackIntegration(result, allPastResults);
 
     results.push(result);
   }
@@ -102,7 +102,7 @@ function _timeStringToMS(duration) {
   return parseInt((duration.split(':').reduce((acc, time) => (60 * acc) + +time) * 1000).toFixed(0));
 }
 
-function _triggerSlackIntegration(newResult, allPastResults) {
+async function _triggerSlackIntegration(newResult, allPastResults) {
   const personalPastResults = allPastResults.filter(result => result.name === newResult.name);
   const { name, fastestLap, totalTime, totalLaps } = newResult;
 

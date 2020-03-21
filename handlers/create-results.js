@@ -65,7 +65,7 @@ module.exports.handle = async function (event, context, callback) {
       race: RACE_ID,
       sortKey: `${name}_${(10000 - parseInt(totalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(rawTotalTime).toString().padStart(10, '0')}`,
       name,
-      totalLaps,
+      totalLaps: parseInt(totalLaps),
       totalTime,
       fastestLap: _timeStringToMS(rawFastestLap),
       laps,
@@ -165,6 +165,7 @@ function _bestTimeSortKey(results) {
 }
 
 function _timeSortKey(result) {
+  console.log(result.sortKey.replace(`${result.name}_`, ''));
   return result.sortKey.replace(`${result.name}_`, '');
 }
 

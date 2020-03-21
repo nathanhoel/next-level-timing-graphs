@@ -104,7 +104,7 @@ function _timeStringToMS(duration) {
 
 async function _triggerSlackIntegration(newResult, allPastResults) {
   const personalPastResults = allPastResults.filter(result => result.name === newResult.name);
-  const { name, fastestLap, totalTime, totalLaps } = newResult;
+  const { name, fastestLap } = newResult;
 
   if (allPastResults.length === 0) {
     await sendMessage(`*${name}* just recorded the very first time for the current race!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
@@ -122,7 +122,7 @@ async function _triggerSlackIntegration(newResult, allPastResults) {
   }
 
   if (personalPastResults.length === 0) {
-    await sendMessage(`*${name}* just recorded their first time!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
+    await sendMessage(`*${name}* just recorded their first time!\n ${_resultTimeText(newResult)}\n fastest lap *${msToTimeFormat(fastestLap)}* seconds\n ${_resultLinkText(newResult)}`);
     return;
   }
 

@@ -161,11 +161,10 @@ function _isBestLap(newResult, allPastResults) {
 }
 
 function _bestTimeSortKey(results) {
-  return Math.min.apply(Math, results.map(result => _timeSortKey(result)));
+  return results.map(result => _timeSortKey(result)).sort()[0];
 }
 
 function _timeSortKey(result) {
-  console.log(result.sortKey.replace(`${result.name}_`, ''));
   return result.sortKey.replace(`${result.name}_`, '');
 }
 

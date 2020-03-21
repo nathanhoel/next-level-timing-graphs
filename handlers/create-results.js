@@ -118,7 +118,7 @@ async function _triggerSlackIntegration(newResult, allPastResults) {
 
   const isBestLap = allPastResults.length !== personalPastResults.length && _isBestLap(newResult, allPastResults);
   if (isBestLap) {
-    await sendMessage(`*${name}* just beat the overall fastest lap!\n *${msToTimeFormat(fastestLap)} seconds\n ${_resultLinkText(newResult)}`);
+    await sendMessage(`*${name}* just beat the overall fastest lap!\n *${msToTimeFormat(fastestLap)}* seconds\n ${_resultLinkText(newResult)}`);
   }
 
   if (personalPastResults.length === 0) {
@@ -131,7 +131,7 @@ async function _triggerSlackIntegration(newResult, allPastResults) {
   }
 
   if (!isBestLap && _isPersonalBestLap(newResult, personalPastResults)) {
-    await sendMessage(`*${name}* just beat their personal fastest lap!\n *${msToTimeFormat(fastestLap)} seconds\n ${_resultLinkText(newResult)}`);
+    await sendMessage(`*${name}* just beat their personal fastest lap!\n *${msToTimeFormat(fastestLap)}* seconds\n ${_resultLinkText(newResult)}`);
   }
 }
 

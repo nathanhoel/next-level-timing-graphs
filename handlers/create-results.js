@@ -107,37 +107,41 @@ async function _triggerSlackIntegration(newResult, allPastResults) {
   const { name, fastestLap, totalTime, totalLaps } = newResult;
 
   if (allPastResults.length === 0) {
-    await sendMessage(`*${name}* just recorded the very first time for the current race!\n ${_resultText(newResult)}`);
+    await sendMessage(`*${name}* just recorded the very first time for the current race!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
     return;
   }
 
   const isBestResult = allPastResults.length !== personalPastResults.length && _isBestResult(newResult, allPastResults);
   if (isBestResult) {
-    await sendMessage(`*${name}* just took over first place!\n ${_resultText(newResult)}`);
+    await sendMessage(`*${name}* just took over first place!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
   }
 
   const isBestLap = allPastResults.length !== personalPastResults.length && _isBestLap(newResult, allPastResults);
   if (isBestLap) {
-    await sendMessage(`*${name}* just beat the overall fastest lap!\n *${msToTimeFormat(fastestLap)} s`);
+    await sendMessage(`*${name}* just beat the overall fastest lap!\n *${msToTimeFormat(fastestLap)} seconds\n ${_resultLinkText(newResult)}`);
   }
 
   if (personalPastResults.length === 0) {
-    await sendMessage(`*${name}* just recorded their first time!\n ${_resultText(newResult)}`);
+    await sendMessage(`*${name}* just recorded their first time!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
     return;
   }
 
   if (!isBestResult && _isPersonalBestResult(newResult, personalPastResults)) {
-    await sendMessage(`*${name}* just beat their personal best time!\n ${_resultText(newResult)}`);
+    await sendMessage(`*${name}* just beat their personal best time!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
   }
 
   if (!isBestLap && _isPersonalBestLap(newResult, personalPastResults)) {
-    await sendMessage(`*${name}* just beat their personal fastest lap!\n *${msToTimeFormat(fastestLap)} s`);
+    await sendMessage(`*${name}* just beat their personal fastest lap!\n *${msToTimeFormat(fastestLap)} seconds\n ${_resultLinkText(newResult)}`);
   }
 }
 
-function _resultText(result) {
+function _resultTimeText(result) {
   const { totalLaps, totalTime } = result;
   return `*${totalLaps}* laps in *${msToTimeFormat(totalTime, true)}*`;
+}
+
+function _resultLinkText(result) {
+  return '<https://bit.ly/2QmCLBp|All Results>';
 }
 
 function _isPersonalBestResult(newResult, personalPastResults) {

@@ -107,31 +107,31 @@ async function _triggerSlackIntegration(newResult, allPastResults) {
   const { name, fastestLap } = newResult;
 
   if (allPastResults.length === 0) {
-    await sendMessage(`*${name}* just recorded the very first time for the current race!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
+    await sendMessage(`:siren: *${name}* just recorded the very first time for the current race!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
     return;
   }
 
   const isBestResult = allPastResults.length !== personalPastResults.length && _isBestResult(newResult, allPastResults);
   if (isBestResult) {
-    await sendMessage(`*${name}* just took over first place!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
+    await sendMessage(`:siren: *${name}* just took over first place!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
   }
 
   const isBestLap = allPastResults.length !== personalPastResults.length && _isBestLap(newResult, allPastResults);
   if (isBestLap) {
-    await sendMessage(`*${name}* just beat the overall fastest lap!\n *${msToTimeFormat(fastestLap)}* seconds\n ${_resultLinkText(newResult)}`);
+    await sendMessage(`:siren: *${name}* just beat the overall fastest lap!\n *${msToTimeFormat(fastestLap)}* seconds\n ${_resultLinkText(newResult)}`);
   }
 
   if (personalPastResults.length === 0) {
-    await sendMessage(`*${name}* just recorded their first time!\n ${_resultTimeText(newResult)}\n fastest lap *${msToTimeFormat(fastestLap)}* seconds\n ${_resultLinkText(newResult)}`);
+    await sendMessage(`:siren: *${name}* just recorded their first time!\n ${_resultTimeText(newResult)}\n fastest lap *${msToTimeFormat(fastestLap)}* seconds\n ${_resultLinkText(newResult)}`);
     return;
   }
 
   if (!isBestResult && _isPersonalBestResult(newResult, personalPastResults)) {
-    await sendMessage(`*${name}* just beat their personal best time!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
+    await sendMessage(`:siren: *${name}* just beat their personal best time!\n ${_resultTimeText(newResult)}\n ${_resultLinkText(newResult)}`);
   }
 
   if (!isBestLap && _isPersonalBestLap(newResult, personalPastResults)) {
-    await sendMessage(`*${name}* just beat their personal fastest lap!\n *${msToTimeFormat(fastestLap)}* seconds\n ${_resultLinkText(newResult)}`);
+    await sendMessage(`:siren: *${name}* just beat their personal fastest lap!\n *${msToTimeFormat(fastestLap)}* seconds\n ${_resultLinkText(newResult)}`);
   }
 }
 

@@ -42,9 +42,15 @@ module.exports.handle = async function (event, context, callback) {
 
   const results = [];
   for (const rawResult of rawResults) {
-    let [, name, totalLaps, , rawTotalTime, rawFastestLap, , , ...rawLaps] = rawResult.split(/\n/g);
+    let [, name, rawTotalLaps, , rawTotalTime, rawFastestLap, , , ...rawLaps] = rawResult.split(/\n/g);
 
-    if (rawLaps.length === 1 && rawLaps.split(' ').length > 3) {
+    const totalTime = _timeStringToMS(rawTotalTime);
+    const laps = rawLaps.filter(rawLap => !!rawLap).map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
+    const totalLaps = parseInt(rawTotalLaps);
+    const totalLapTime = laps.reduce((total, cur) => total + cur, 0);
+    const startTime = totalTime - totalLapTime;
+
+    if (totalLaps !== laps.length) {
       console.error('All Laps not Showing');
       callback(null, {
         statusCode: 400,
@@ -54,18 +60,13 @@ module.exports.handle = async function (event, context, callback) {
       return;
     }
 
-    const totalTime = _timeStringToMS(rawTotalTime);
-    const laps = rawLaps.filter(rawLap => !!rawLap).map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
-    const totalLapTime = laps.reduce((total, cur) => total + cur, 0);
-    const startTime = totalTime - totalLapTime;
-
     const result = {
       id: uuid.v4(),
       createdAt: timestamp,
       race: RACE_ID,
-      sortKey: `${name}_${(10000 - parseInt(totalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(rawTotalTime).toString().padStart(10, '0')}`,
+      sortKey: `${name}_${(10000 - parseInt(rawTotalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(rawTotalTime).toString().padStart(10, '0')}`,
       name,
-      totalLaps: parseInt(totalLaps),
+      totalLaps,
       totalTime,
       fastestLap: _timeStringToMS(rawFastestLap),
       laps,

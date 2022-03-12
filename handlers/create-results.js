@@ -5,7 +5,7 @@ const { msToTimeFormat } = require('../lib/time');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = `${process.env.STAGE}-nlt-results`;
-const RACE_ID = '93c856b2-027a-40f6-b06d-ee0c90068643';
+const RACE_ID = 'df9fb2b0-1151-4048-aa99-8252517ef78e';
 
 module.exports.handle = async function (event, context, callback) {
   const timestamp = new Date().toISOString();

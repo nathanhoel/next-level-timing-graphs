@@ -1,7 +1,7 @@
 service: next-level-timing-graphs
 app: next-level-timing-graphs
 
-frameworkVersion: ">=1.1.0 <2.0.0"
+frameworkVersion: ">=3.0.0 <4.0.0"
 
 provider:
   name: aws

@@ -39,7 +39,7 @@ async function _parseRace(raceId) {
   const racer = race.participants[0];
   const name = racer.racer_name;
   const totalTime = racer.elapsed_time;
-  const laps = rawLaps.filter(rawLap => !!rawLap).map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
+  const laps = await _getLaps(race.events, race.minimum_lap_time);
   const totalLaps = racer.laps;
   const totalLapTime = laps.reduce((total, cur) => total + cur, 0);
   const startTime = totalTime - totalLapTime;
@@ -68,23 +68,11 @@ async function _parseRace(raceId) {
 }
 
 async function _validateRace(raceId) {
-  console.log(raceId);
   var race = (await request({
     method: 'GET',
     uri: `https://nextleveltiming.com/api/races/${raceId}`,
     json: true,
   })).data;
-
-  console.log(race);
-
-  // race = await request({
-  //   method: 'GET',
-  //   uri: `https://nextleveltiming.com/api/races/${raceId}`,
-  //   json: true,
-  // });
-  // console.log(race);
-  // race = race.data;
-  // console.log(race);
 
   // check valid
   if (

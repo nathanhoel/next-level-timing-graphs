@@ -77,14 +77,14 @@ async function _validateRace(raceId) {
 
   console.log(race);
 
-  race = await request({
-    method: 'GET',
-    uri: `https://nextleveltiming.com/api/races/${raceId}`,
-    json: true,
-  });
-  console.log(race);
-  race = race.data;
-  console.log(race);
+  // race = await request({
+  //   method: 'GET',
+  //   uri: `https://nextleveltiming.com/api/races/${raceId}`,
+  //   json: true,
+  // });
+  // console.log(race);
+  // race = race.data;
+  // console.log(race);
 
   // check valid
   if (
@@ -97,7 +97,7 @@ async function _validateRace(raceId) {
   }
 
   if (
-    UNSET_RACER_NAMES.includes(race.partipants[0].racer_name)
+    UNSET_RACER_NAMES.includes(race.participants[0].racer_name)
     || race.status !== 'complete'
   ) {
     return false;

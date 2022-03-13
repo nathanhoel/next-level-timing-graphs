@@ -39,7 +39,7 @@ async function _parseRace(raceId) {
   const racer = race.participants[0];
   const name = racer.racer_name;
   const totalTime = racer.elapsed_time;
-  const laps = await _getLaps(race.events, race.minimum_lap_time);
+  const laps = _getLaps(race.events, race.minimum_lap_time);
   const totalLaps = racer.laps;
   const totalLapTime = laps.reduce((total, cur) => total + cur, 0);
   const startTime = totalTime - totalLapTime;
@@ -117,6 +117,8 @@ function _getLaps(rawLaps, minimumLapTime) {
     lastRaceTime = rawLap.race_time;
     laps.push(lapTime);
   }
+
+  return laps;
 }
 
 function _timeStringToMS(duration) {

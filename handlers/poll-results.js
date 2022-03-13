@@ -48,7 +48,7 @@ async function _parseRace(raceId) {
     id: uuid.v4(),
     createdAt: new Date(race.created_at).toISOString(),
     race: RACE_ID,
-    sortKey: `${name}_${(10000 - parseInt(totalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(totalTime).toString().padStart(10, '0')}`,
+    sortKey: `${name}_${(10000 - totalLaps).toString().padStart(5, '0')}_${totalTime.toString().padStart(10, '0')}`,
     name,
     totalLaps,
     totalTime,

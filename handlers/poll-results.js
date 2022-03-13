@@ -46,7 +46,7 @@ async function _parseRace(raceId) {
 
   const result = {
     id: uuid.v4(),
-    createdAt: timestamp,
+    createdAt: new Date(race.created_at).toISOString(),
     race: RACE_ID,
     sortKey: `${name}_${(10000 - parseInt(rawTotalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(rawTotalTime).toString().padStart(10, '0')}`,
     name,

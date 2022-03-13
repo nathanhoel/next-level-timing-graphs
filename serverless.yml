@@ -21,7 +21,7 @@ provider:
 
 functions:
   createResult:
-    handler: handlers/poll-results.handle
+    handler: handlers/create-results.handle
     events:
       - http:
           method: post

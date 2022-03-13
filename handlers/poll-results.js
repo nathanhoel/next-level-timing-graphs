@@ -7,34 +7,98 @@ const { msToTimeFormat } = require('../lib/time');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = `${process.env.STAGE}-nlt-results`;
 const RACE_ID = 'df9fb2b0-1151-4048-aa99-8252517ef78e';
+const UNSET_RACER_NAMES = ['Racer not assigned'];
 
 module.exports.handle = async function (event, context, callback) {
-  var races = await request({
+  const races = await request({
     method: 'GET',
     uri: 'https://nextleveltiming.com/api/races?filter[community_id]=19',
     json: true,
   });
 
-  console.log(races);
+  const raceId = races.data[0].id;
 
-  return;
-
-  const timestamp = new Date().toISOString();
-  const { body } = event;
-  if (typeof body !== 'string') {
-    console.error('Validation Failed');
-    callback(null, {
-      statusCode: 400,
-      headers: { 'Content-Type': 'text/plain' },
-      body: '"data" must be set',
-    });
-    return;
+  var racesAdded = 0;
+  if (await _parseRace(raceId)) {
+    racesAdded++;
   }
 
-  const rawData = Buffer.from(body, 'base64').toString('utf-8')
+  callback(null, {
+    statusCode: 200,
+    body: JSON.stringify({
+      racesAdded: racesAdded
+    }),
+  });
+}
 
-  console.log(rawData);
+async function _parseRace(raceId) {
+  const race = await _validateRace(raceId);
+  if (!race) { return false; }
 
+  //let [, name, rawTotalLaps, , rawTotalTime, rawFastestLap, , , ...rawLaps] = rawResult.split(/\n/g);
+
+  const name = race.partipants[0].racer_name;
+  const totalTime = _timeStringToMS(rawTotalTime);
+  const laps = rawLaps.filter(rawLap => !!rawLap).map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
+  const totalLaps = parseInt(rawTotalLaps);
+  const totalLapTime = laps.reduce((total, cur) => total + cur, 0);
+  const startTime = totalTime - totalLapTime;
+
+  const result = {
+    id: uuid.v4(),
+    createdAt: timestamp,
+    race: RACE_ID,
+    sortKey: `${name}_${(10000 - parseInt(rawTotalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(rawTotalTime).toString().padStart(10, '0')}`,
+    name,
+    totalLaps,
+    totalTime,
+    fastestLap: _timeStringToMS(rawFastestLap),
+    laps,
+  };
+
+  if (startTime > 1) {
+    laps.unshift(startTime);
+    result.startTime = startTime;
+  }
+
+  await _triggerSlackIntegration(result);
+  await _storeResult(result);
+
+  return true;
+}
+
+async function _validateRace(raceId) {
+  const race = (await request({
+    method: 'GET',
+    uri: `https://nextleveltiming.com/api/races/${raceId}`,
+    json: true,
+  })).data;
+
+  // check valid
+  if (
+    race.partipants.length !== 1
+    || race.race_format.time !== 180000
+    || race.race_format.mode !== 'race'
+  ) {
+    // mark race id as invalid
+    return false;
+  }
+
+  if (
+    UNSET_RACER_NAMES.includes(race.partipants[0].racer_name)
+    || race.status !== 'complete'
+  ) {
+    return false;
+  }
+
+  return race;
+}
+
+function _timeStringToMS(duration) {
+  return parseInt((duration.split(':').reduce((acc, time) => (60 * acc) + +time) * 1000).toFixed(0));
+}
+
+async function _triggerSlackIntegration(newResult) {
   const query = await dynamoDb.query({
     TableName: TABLE_NAME,
     KeyConditionExpression: 'race = :hkey',
@@ -44,77 +108,6 @@ module.exports.handle = async function (event, context, callback) {
   }).promise();
   const allPastResults = query.Items;
 
-  // split the results into header and sets
-  var [rawHeaders, ...rawResults] = rawData
-    .replace(/\n\r/g, "\n")
-    .replace(/\r\n/g, "\n")
-    .replace(/\r/g, "\n")
-    .split(/\n{2,}/g);
-
-  const results = [];
-  for (const rawResult of rawResults) {
-    let [, name, rawTotalLaps, , rawTotalTime, rawFastestLap, , , ...rawLaps] = rawResult.split(/\n/g);
-
-    const totalTime = _timeStringToMS(rawTotalTime);
-    const laps = rawLaps.filter(rawLap => !!rawLap).map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
-    const totalLaps = parseInt(rawTotalLaps);
-    const totalLapTime = laps.reduce((total, cur) => total + cur, 0);
-    const startTime = totalTime - totalLapTime;
-
-    if (totalLaps !== laps.length) {
-      console.error('All Laps not Showing');
-      callback(null, {
-        statusCode: 400,
-        headers: { 'Content-Type': 'text/plain' },
-        body: 'Must show all laps!',
-      });
-      return;
-    }
-
-    const result = {
-      id: uuid.v4(),
-      createdAt: timestamp,
-      race: RACE_ID,
-      sortKey: `${name}_${(10000 - parseInt(rawTotalLaps)).toString().padStart(5, '0')}_${_timeStringToMS(rawTotalTime).toString().padStart(10, '0')}`,
-      name,
-      totalLaps,
-      totalTime,
-      fastestLap: _timeStringToMS(rawFastestLap),
-      laps,
-    };
-
-    if (startTime > 1) {
-      laps.unshift(startTime);
-      result.startTime = startTime;
-    }
-
-    await _triggerSlackIntegration(result, allPastResults);
-
-    results.push(result);
-  }
-
-  for (const result of results) {
-    const params = {
-      TableName: TABLE_NAME,
-      Item: result,
-    };
-
-    console.log(params);
-
-    await dynamoDb.put(params).promise();
-  };
-
-  callback(null, {
-    statusCode: 200,
-    body: JSON.stringify(results),
-  });
-}
-
-function _timeStringToMS(duration) {
-  return parseInt((duration.split(':').reduce((acc, time) => (60 * acc) + +time) * 1000).toFixed(0));
-}
-
-async function _triggerSlackIntegration(newResult, allPastResults) {
   const personalPastResults = allPastResults.filter(result => result.name === newResult.name);
   const { name, fastestLap } = newResult;
 
@@ -145,6 +138,17 @@ async function _triggerSlackIntegration(newResult, allPastResults) {
   if (!isBestLap && _isPersonalBestLap(newResult, personalPastResults)) {
     await sendMessage(`:siren: *${name}* just beat their personal fastest lap!\n *${msToTimeFormat(fastestLap)}* seconds\n ${_resultLinkText(newResult)}`);
   }
+}
+
+async function _storeResult(result) {
+  const params = {
+    TableName: TABLE_NAME,
+    Item: result,
+  };
+
+  console.log(params);
+
+  return dynamoDb.put(params).promise();
 }
 
 function _resultTimeText(result) {

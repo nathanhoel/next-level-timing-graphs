@@ -7,7 +7,7 @@ const { msToTimeFormat } = require('../lib/time');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = `${process.env.STAGE}-nlt-results`;
 const RACE_ID = 'df9fb2b0-1151-4048-aa99-8252517ef78e';
-const UNSET_RACER_NAMES = ['Racer not assigned'];
+const UNSET_RACER_NAMES = ['88025', '88707', 'Racer not assigned'];
 
 module.exports.handle = async function (event, context, callback) {
   const races = await request({
@@ -36,11 +36,11 @@ async function _parseRace(raceId) {
   if (!race) { return false; }
 
   //let [, name, rawTotalLaps, , rawTotalTime, rawFastestLap, , , ...rawLaps] = rawResult.split(/\n/g);
-
-  const name = race.partipants[0].racer_name;
-  const totalTime = _timeStringToMS(rawTotalTime);
+  const racer = race.participants[0];
+  const name = racer.racer_name;
+  const totalTime = racer.elapsed_time;
   const laps = rawLaps.filter(rawLap => !!rawLap).map((rawLap) => _timeStringToMS(rawLap.split(' ')[1]));
-  const totalLaps = parseInt(rawTotalLaps);
+  const totalLaps = racer.laps;
   const totalLapTime = laps.reduce((total, cur) => total + cur, 0);
   const startTime = totalTime - totalLapTime;
 
@@ -52,7 +52,7 @@ async function _parseRace(raceId) {
     name,
     totalLaps,
     totalTime,
-    fastestLap: _timeStringToMS(rawFastestLap),
+    fastestLap: racer.fast_lap,
     laps,
   };
 
@@ -65,6 +65,31 @@ async function _parseRace(raceId) {
   await _storeResult(result);
 
   return true;
+}
+
+function _getLaps(rawLaps, minimumLapTime) {
+  const laps = [];
+  var lastRaceTime = 0;
+  for (const rawLap of rawLaps) {
+    if (rawLap.type !== 'racer_passed_sector') { continue; }
+
+    const lapTime = rawLap.race_time - lastRaceTime;
+
+    // initialize first lap
+    if (laps.length === 0) {
+      lastRaceTime = rawLap.race_time;
+      continue;
+    }
+
+    // skip invalid laps
+    if (lapTime < minimumLapTime) {
+      continue;
+    }
+
+    // record lap
+    lastRaceTime = rawLap.race_time;
+    laps.push(lapTime);
+  }
 }
 
 async function _validateRace(raceId) {
@@ -157,7 +182,7 @@ function _resultTimeText(result) {
 }
 
 function _resultLinkText(result) {
-  return '<https://bit.ly/2QmCLBp|All Results>';
+  return `<https://3tmw38jjg8.execute-api.us-east-1.amazonaws.com/production/races/${RACE_ID}|All Results>`;
 }
 
 function _isPersonalBestResult(newResult, personalPastResults) {

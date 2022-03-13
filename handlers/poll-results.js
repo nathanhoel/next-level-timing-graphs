@@ -67,6 +67,45 @@ async function _parseRace(raceId) {
   return true;
 }
 
+async function _validateRace(raceId) {
+  console.log(raceId);
+  var race = (await request({
+    method: 'GET',
+    uri: `https://nextleveltiming.com/api/races/${raceId}`,
+    json: true,
+  })).data;
+
+  console.log(race);
+
+  race = await request({
+    method: 'GET',
+    uri: `https://nextleveltiming.com/api/races/${raceId}`,
+    json: true,
+  });
+  console.log(race);
+  race = race.data;
+  console.log(race);
+
+  // check valid
+  if (
+    race.participants.length !== 1
+    || race.race_format.time !== 180000
+    || race.race_format.mode !== 'race'
+  ) {
+    // mark race id as invalid
+    return false;
+  }
+
+  if (
+    UNSET_RACER_NAMES.includes(race.partipants[0].racer_name)
+    || race.status !== 'complete'
+  ) {
+    return false;
+  }
+
+  return race;
+}
+
 function _getLaps(rawLaps, minimumLapTime) {
   const laps = [];
   var lastRaceTime = 0;
@@ -90,33 +129,6 @@ function _getLaps(rawLaps, minimumLapTime) {
     lastRaceTime = rawLap.race_time;
     laps.push(lapTime);
   }
-}
-
-async function _validateRace(raceId) {
-  const race = (await request({
-    method: 'GET',
-    uri: `https://nextleveltiming.com/api/races/${raceId}`,
-    json: true,
-  })).data;
-
-  // check valid
-  if (
-    race.partipants.length !== 1
-    || race.race_format.time !== 180000
-    || race.race_format.mode !== 'race'
-  ) {
-    // mark race id as invalid
-    return false;
-  }
-
-  if (
-    UNSET_RACER_NAMES.includes(race.partipants[0].racer_name)
-    || race.status !== 'complete'
-  ) {
-    return false;
-  }
-
-  return race;
 }
 
 function _timeStringToMS(duration) {

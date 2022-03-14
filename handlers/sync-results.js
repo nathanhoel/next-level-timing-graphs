@@ -15,7 +15,7 @@ module.exports.handle = async function (event, context, callback) {
 }
 
 module.exports.poll = async function (event, context, callback) {
-  await _timeout(10000);
+  await _timeout(60000);
   await _doSync(callback, true);
 }
 

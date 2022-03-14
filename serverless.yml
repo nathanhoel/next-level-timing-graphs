@@ -30,8 +30,8 @@ functions:
 
   pollResults:
     handler: handlers/sync-results.poll
-    timeout: 60
-    maximumRetryAttempts: 12
+    timeout: 120
+    maximumRetryAttempts: 2
 
   getResult:
     handler: handlers/get-race.handle

@@ -20,17 +20,18 @@ module.exports.poll = async function (event, context, callback) {
 }
 
 async function _doSync(callback, isPolling) {
-  const races = await request({
+  const races = (await request({
     method: 'GET',
     uri: 'https://nextleveltiming.com/api/races?filter[community_id]=19',
     json: true,
-  });
-
-  const raceId = races.data[0].id;
+  })).data;
 
   var racesAdded = 0;
-  if (await _parseRace(raceId, isPolling)) {
-    racesAdded++;
+  for (let index = 0; index < Math.min(3, races.length); index++) {
+    const raceId = races[index].id;
+    if (await _parseRace(raceId, isPolling)) {
+      racesAdded++;
+    }
   }
 
   callback(null, {
@@ -99,7 +100,7 @@ async function _validateRace(raceId, isPolling) {
 
   if (
     UNSET_RACER_NAMES.includes(race.participants[0].racer_name)
-    || race.status !== 'complete' || true
+    || race.status !== 'complete'
   ) {
     if (isPolling) {
       throw `Race ${raceId} is not complete or has no racer name`;

@@ -22,6 +22,7 @@ provider:
 functions:
   createResult:
     handler: handlers/poll-results.handle
+    timeout: 15
     events:
       - http:
           method: post
@@ -53,3 +54,28 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
 
+    ResulsTableV2:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        TableName: '${opt:stage, self:provider.stage}-nlt-results-v2'
+        AttributeDefinitions:
+          - AttributeName: race
+            AttributeType: S
+          - AttributeName: sortKey
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: raceIndex
+            KeySchema:
+              - AttributeName: race
+                KeyType: HASH
+              - AttributeName: sortKey
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST

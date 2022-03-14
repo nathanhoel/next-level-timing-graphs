@@ -45,7 +45,7 @@ async function _parseRace(raceId) {
   const startTime = totalTime - totalLapTime;
 
   const result = {
-    id: uuid.v4(),
+    id: raceId,
     createdAt: new Date(race.created_at).toISOString(),
     race: RACE_ID,
     sortKey: `${name}_${(10000 - totalLaps).toString().padStart(5, '0')}_${totalTime.toString().padStart(10, '0')}`,
@@ -80,7 +80,6 @@ async function _validateRace(raceId) {
     || race.race_format.time !== 180000
     || race.race_format.mode !== 'race'
   ) {
-    // mark race id as invalid
     return false;
   }
 

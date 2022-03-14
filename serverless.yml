@@ -17,7 +17,7 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${opt:stage, self:provider.stage}-nlt-results"
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${opt:stage, self:provider.stage}-nlt-results*"
 
 functions:
   createResult:

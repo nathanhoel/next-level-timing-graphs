@@ -10,6 +10,10 @@ const RACE_ID = 'df9fb2b0-1151-4048-aa99-8252517ef78e';
 const UNSET_RACER_NAMES = ['88025', '88707', 'Racer not assigned'];
 
 module.exports.handle = async function (event, context, callback) {
+  await copyRace('93c856b2-027a-40f6-b06d-ee0c90068643');
+  await copyRace('df9fb2b0-1151-4048-aa99-8252517ef78e');
+
+  return;
   const races = await request({
     method: 'GET',
     uri: 'https://nextleveltiming.com/api/races?filter[community_id]=19',
@@ -29,6 +33,25 @@ module.exports.handle = async function (event, context, callback) {
       racesAdded: racesAdded
     }),
   });
+}
+
+async function copyRace(raceId) {
+  const query = await dynamoDb.query({
+    TableName: TABLE_NAME,
+    KeyConditionExpression: 'race = :hkey',
+    ExpressionAttributeValues: {
+      ':hkey': raceId,
+    }
+  }).promise();
+  const allPastResults = query.Items;
+
+  for (const item of allPastResults) {
+    const params = {
+      TableName: `${process.env.STAGE}-nlt-results-v2`,
+      Item: item,
+    };
+    await dynamoDb.put(params).promise();
+  }
 }
 
 async function _parseRace(raceId) {

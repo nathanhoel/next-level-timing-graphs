@@ -5,11 +5,21 @@ const { sendMessage } = require('../lib/slack');
 const { msToTimeFormat } = require('../lib/time');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const lambda = new AWS.Lambda();
 const TABLE_NAME = `${process.env.STAGE}-nlt-results-v2`;
 const RACE_ID = 'df9fb2b0-1151-4048-aa99-8252517ef78e';
 const UNSET_RACER_NAMES = ['88025', '88707', 'Racer not assigned'];
 
 module.exports.handle = async function (event, context, callback) {
+  await _doSync(callback, false);
+}
+
+module.exports.poll = async function (event, context, callback) {
+  await _timeout(10000);
+  await _doSync(callback, true);
+}
+
+async function _doSync(callback, isPolling) {
   const races = await request({
     method: 'GET',
     uri: 'https://nextleveltiming.com/api/races?filter[community_id]=19',
@@ -19,7 +29,7 @@ module.exports.handle = async function (event, context, callback) {
   const raceId = races.data[0].id;
 
   var racesAdded = 0;
-  if (await _parseRace(raceId)) {
+  if (await _parseRace(raceId, isPolling)) {
     racesAdded++;
   }
 
@@ -31,8 +41,12 @@ module.exports.handle = async function (event, context, callback) {
   });
 }
 
-async function _parseRace(raceId) {
-  const race = await _validateRace(raceId);
+function _timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function _parseRace(raceId, isPolling) {
+  const race = await _validateRace(raceId, isPolling);
   if (!race) { return false; }
 
   //let [, name, rawTotalLaps, , rawTotalTime, rawFastestLap, , , ...rawLaps] = rawResult.split(/\n/g);
@@ -67,7 +81,7 @@ async function _parseRace(raceId) {
   return true;
 }
 
-async function _validateRace(raceId) {
+async function _validateRace(raceId, isPolling) {
   var race = (await request({
     method: 'GET',
     uri: `https://nextleveltiming.com/api/races/${raceId}`,
@@ -87,6 +101,13 @@ async function _validateRace(raceId) {
     UNSET_RACER_NAMES.includes(race.participants[0].racer_name)
     || race.status !== 'complete'
   ) {
+    if (isPolling) {
+      throw `Race ${raceId} is not complete or has no racer name`;
+    }
+    await lambda.invoke({
+      FunctionName: 'next-level-timing-graphs-production-pollResults',
+      InvocationType: 'Event',
+    }).promise();
     return false;
   }
 

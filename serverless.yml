@@ -20,13 +20,18 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${opt:stage, self:provider.stage}-nlt-results*"
 
 functions:
-  createResult:
-    handler: handlers/poll-results.handle
+  syncResults:
+    handler: handlers/sync-results.handle
     timeout: 15
     events:
       - http:
           method: post
           path: results
+
+  pollResults:
+    handler: handlers/sync-results.poll
+    timeout: 60
+    maximumRetryAttempts: 12
 
   getResult:
     handler: handlers/get-race.handle

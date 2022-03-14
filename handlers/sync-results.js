@@ -76,7 +76,7 @@ async function _parseRace(raceId, isPolling) {
     result.startTime = startTime;
   }
 
-  // await _triggerSlackIntegration(result);
+  await _triggerSlackIntegration(result);
   await _storeResult(result);
 
   return true;

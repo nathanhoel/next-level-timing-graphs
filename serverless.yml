@@ -18,6 +18,10 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${opt:stage, self:provider.stage}-nlt-results*"
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: "arn:aws:lambda:${opt:region, self:provider.region}:*:function:next-level-timing-graphs-${opt:stage, self:provider.stage}-pollResults"
 
 functions:
   syncResults:

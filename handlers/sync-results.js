@@ -92,6 +92,7 @@ async function _validateRace(raceId, isPolling) {
   // check valid
   if (
     race.participants.length !== 1
+    || !race.race_format
     || race.race_format.time !== 180000
     || race.race_format.mode !== 'race'
   ) {

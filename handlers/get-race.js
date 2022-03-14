@@ -4,7 +4,7 @@ const chartistRight = require('../lib/chartist-right');
 const { msToTimeFormat } = require('../lib/time');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const TABLE_NAME = `${process.env.STAGE}-nlt-results`;
+const TABLE_NAME = `${process.env.STAGE}-nlt-results-v2`;
 
 module.exports.handle = async function (event, context, callback) {
   const race = {
@@ -14,6 +14,7 @@ module.exports.handle = async function (event, context, callback) {
 
   const result = await dynamoDb.query({
     TableName: TABLE_NAME,
+    IndexName: 'raceIndex',
     KeyConditionExpression: 'race = :hkey',
     ExpressionAttributeValues: {
       ':hkey': race.id,

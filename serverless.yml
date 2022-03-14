@@ -37,23 +37,6 @@ functions:
 
 resources:
   Resources:
-    ResulsTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-      Properties:
-        TableName: '${opt:stage, self:provider.stage}-nlt-results'
-        AttributeDefinitions:
-          - AttributeName: race
-            AttributeType: S
-          - AttributeName: sortKey
-            AttributeType: S
-        KeySchema:
-          - AttributeName: race
-            KeyType: HASH
-          - AttributeName: sortKey
-            KeyType: RANGE
-        BillingMode: PAY_PER_REQUEST
-
     ResulsTableV2:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain

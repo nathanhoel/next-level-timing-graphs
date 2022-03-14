@@ -61,7 +61,7 @@ async function _parseRace(raceId) {
     result.startTime = startTime;
   }
 
-  await _triggerSlackIntegration(result);
+  // await _triggerSlackIntegration(result);
   await _storeResult(result);
 
   return true;
@@ -103,7 +103,7 @@ function _getLaps(rawLaps, minimumLapTime) {
     const lapTime = rawLap.race_time - lastRaceTime;
 
     // initialize first lap
-    if (laps.length === 0) {
+    if (lastRaceTime === 0 && laps.length === 0) {
       lastRaceTime = rawLap.race_time;
       continue;
     }

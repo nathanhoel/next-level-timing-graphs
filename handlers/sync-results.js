@@ -59,7 +59,7 @@ async function _parseRace(raceId, isPolling) {
   const startTime = totalTime - totalLapTime;
 
   const result = {
-    id: raceId,
+    id: raceId.toString(),
     createdAt: new Date(race.created_at).toISOString(),
     race: RACE_ID,
     sortKey: `${name}_${(10000 - totalLaps).toString().padStart(5, '0')}_${totalTime.toString().padStart(10, '0')}`,

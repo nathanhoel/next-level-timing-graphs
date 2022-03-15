@@ -49,7 +49,7 @@ module.exports.handle = async function (event, context, callback) {
       ${header}
 
       <div>
-        Race: Title Here
+        <a href="https://3tmw38jjg8.execute-api.us-east-1.amazonaws.com/production/races">Tournaments</a> > <a href="https://3tmw38jjg8.execute-api.us-east-1.amazonaws.com/production/races/${race.id}">${race.id}</a> > ${decodeURI(event.pathParameters.name)}
       </div>
 
       ${getResultsTable(bestResults, fastestLap, overallFastestLap, race, false)}

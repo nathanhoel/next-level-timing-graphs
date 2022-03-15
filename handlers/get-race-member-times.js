@@ -3,9 +3,7 @@ const headTag = require('../common/head-tag');
 const header = require('../common/header');
 const getResultsTable = require('../common/results-table');
 const getResultsGraph = require('../common/results-graph');
-const getLapTable = require('../common/lap-table');
 const {
-  getDriverBestResults,
   accumalteLaps,
   rankLaps,
   sortByPlace,
@@ -54,8 +52,6 @@ module.exports.handle = async function (event, context, callback) {
       ${getResultsTable(bestResults, fastestLap, overallFastestLap)}
 
       ${getResultsGraph(race, bestResults, maxLaps)}
-
-      ${getLapTable(bestResults, fastestLap)}
     </body>
   </html>`;
 

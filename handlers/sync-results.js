@@ -11,15 +11,17 @@ const RACE_ID = 'df9fb2b0-1151-4048-aa99-8252517ef78e';
 const UNSET_RACER_NAMES = ['88025', '88707', 'Racer not assigned'];
 
 module.exports.handle = async function (event, context, callback) {
-  await _doSync(callback, false);
+  await _doSync(event, callback, false);
 }
 
 module.exports.poll = async function (event, context, callback) {
   await _timeout(60000);
-  await _doSync(callback, true);
+  await _doSync(event, callback, true);
 }
 
-async function _doSync(callback, isPolling) {
+async function _doSync(event, callback, isPolling) {
+  console.log(event);
+
   const races = (await request({
     method: 'GET',
     uri: 'https://nextleveltiming.com/api/races?filter[community_id]=19',

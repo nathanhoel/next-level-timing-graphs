@@ -32,7 +32,7 @@ function _resultRow(result, place, fastestLapInResults, overallFastestLap, race,
         <div class="driver-name">${
           isMultipleDrivers ?
             `<a href="https://3tmw38jjg8.execute-api.us-east-1.amazonaws.com/production/races/${race.id}/member/${encodeURI(result.name)}">${result.name}</a>`
-            : new Date(result.createdAt).toLocaleString('en-US') }</div>
+            : new Date(result.createdAt).toLocaleString('en-US', {timeZone: "America/New_York"}) }</div>
       </th>
       <td class="stat-break">${result.totalLaps}L ${msToTimeFormat(result.totalTime, true)}</td >
       <td class="${fastestLapInResults === result.fastestLap ? 'fastest-lap' : ''}">${msToTimeFormat(result.fastestLap)}</td>

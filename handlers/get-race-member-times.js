@@ -25,7 +25,7 @@ module.exports.handle = async function (event, context, callback) {
     KeyConditionExpression: 'race = :hkey and begins_with(sortKey, :nam)',
     ExpressionAttributeValues: {
       ':hkey': race.id,
-      ':nam': event.pathParameters.name,
+      ':nam': decodeURI(event.pathParameters.name),
     }
   }).promise();
   const allResults = query.Items;

@@ -34,8 +34,8 @@ async function _doSync(callback, isPolling) {
       if (await _parseRace(raceId, isPolling)) {
         racesAdded++;
       }
-    } catch e {
-      errorMessages += " " + e.message;
+    } catch (e) {
+      errorMessages = `${errorMessages} ${e.message}`;
     }
   }
 

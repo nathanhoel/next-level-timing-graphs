@@ -52,9 +52,9 @@ module.exports.handle = async function (event, context, callback) {
         Race: Title Here
       </div>
 
-      ${getResultsTable(bestResults, fastestLap, overallFastestLap)}
+      ${getResultsTable(bestResults, fastestLap, overallFastestLap, race, false)}
 
-      ${getResultsGraph(race, bestResults, maxLaps)}
+      ${getResultsGraph(race, bestResults, maxLaps, false)}
     </body>
   </html>`;
 

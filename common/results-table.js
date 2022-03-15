@@ -1,6 +1,6 @@
 const { msToTimeFormat } = require('../lib/time');
 
-module.exports = function (results, fastestLapInResults, overallFastestLap, isMultipleDrivers = true) {
+module.exports = function (results, fastestLapInResults, overallFastestLap, race, isMultipleDrivers = true) {
   return `
     <div style="margin-top: 50px;">
       <table class="table table-striped">
@@ -14,14 +14,14 @@ module.exports = function (results, fastestLapInResults, overallFastestLap, isMu
           </tr>
         </thead>
         <tbody>
-          ${results.map((result, index) => _resultRow(result, index + 1, fastestLapInResults, overallFastestLap, isMultipleDrivers)).join('')}
+          ${results.map((result, index) => _resultRow(result, index + 1, fastestLapInResults, overallFastestLap, race, isMultipleDrivers)).join('')}
         </tbody>
       </table>
     </div>
   `;
 };
 
-function _resultRow(result, place, fastestLapInResults, overallFastestLap, isMultipleDrivers) {
+function _resultRow(result, place, fastestLapInResults, overallFastestLap, race, isMultipleDrivers) {
   return `
     <tr>
       <th scope="row">
@@ -29,7 +29,10 @@ function _resultRow(result, place, fastestLapInResults, overallFastestLap, isMul
           <div class="position-border-box"></div>
           <span class="position-text">${place}</span>
         </div>
-        <div class="driver-name">${isMultipleDrivers ? result.name : new Date(result.createdAt).toLocaleString('en-US') }</div>
+        <div class="driver-name">${
+          isMultipleDrivers ?
+            `<a href="https://3tmw38jjg8.execute-api.us-east-1.amazonaws.com/production/races/${race.id}/member/${encodeURI(result.name)}">${result.name}</a>`
+            : new Date(result.createdAt).toLocaleString('en-US') }</div>
       </th>
       <td class="stat-break">${result.totalLaps}L ${msToTimeFormat(result.totalTime, true)}</td >
       <td class="${fastestLapInResults === result.fastestLap ? 'fastest-lap' : ''}">${msToTimeFormat(result.fastestLap)}</td>

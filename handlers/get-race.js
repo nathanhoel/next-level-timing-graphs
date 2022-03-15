@@ -50,7 +50,7 @@ module.exports.handle = async function (event, context, callback) {
         Race: Title Here
       </div>
 
-      ${getResultsTable(bestResults, fastestLap, overallFastestLap)}
+      ${getResultsTable(bestResults, fastestLap, overallFastestLap, race)}
 
       ${getResultsGraph(race, bestResults, maxLaps)}
 

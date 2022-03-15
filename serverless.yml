@@ -37,12 +37,19 @@ functions:
     timeout: 120
     maximumRetryAttempts: 2
 
-  getResult:
+  getRaceTimes:
     handler: handlers/get-race.handle
     events:
       - http:
           method: get
           path: races/{id}
+
+  getRaceMemberTimes:
+    handler: handlers/get-race-member-times.handle
+    events:
+      - http:
+          method: get
+          path: races/{id}/member/{name}
 
 resources:
   Resources:

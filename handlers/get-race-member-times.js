@@ -24,10 +24,13 @@ module.exports.handle = async function (event, context, callback) {
   const query = await dynamoDb.query({
     TableName: TABLE_NAME,
     IndexName: 'raceIndex',
-    KeyConditionExpression: 'race = :hkey and begins_with(name, :name)',
+    KeyConditionExpression: 'race = :hkey and begins_with(#nam, :nam)',
+    ExpressionAttributeNames: {
+      '#nam': 'name',
+    },
     ExpressionAttributeValues: {
       ':hkey': race.id,
-      ':name': event.pathParameters.name,
+      ':nam': event.pathParameters.name,
     }
   }).promise();
   const allResults = query.Items;

@@ -20,7 +20,7 @@ module.exports.poll = async function (event, context, callback) {
 }
 
 async function _doSync(event, callback, isPolling) {
-  console.log(event);
+  const racesToUpdate = event.queryStringParameters.races || 3;
 
   const races = (await request({
     method: 'GET',
@@ -30,7 +30,7 @@ async function _doSync(event, callback, isPolling) {
 
   var racesAdded = 0;
   var errorMessages = false;
-  for (let index = 0; index < Math.min(20, races.length); index++) {
+  for (let index = 0; index < Math.min(racesToUpdate, races.length); index++) {
     try {
       const raceId = races[index].id;
       if (await _parseRace(raceId, isPolling)) {

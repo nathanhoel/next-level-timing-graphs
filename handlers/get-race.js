@@ -175,6 +175,7 @@ module.exports.handle = async function (event, context, callback) {
           },
           axisX: {
             type: Chartist.FixedScaleAxis,
+            high: 200000,
             ticks: ${JSON.stringify(_xTicks(race))},
             labelInterpolationFnc: function(value) {
               const minutes = Math.floor(value / 60000).toString().padStart(2, '0');

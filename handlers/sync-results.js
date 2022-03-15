@@ -20,6 +20,7 @@ module.exports.poll = async function (event, context, callback) {
 }
 
 async function _doSync(event, callback, isPolling) {
+  event.queryStringParameters = event.queryStringParameters || {};
   const racesToUpdate = event.queryStringParameters.races || 3;
 
   const races = (await request({

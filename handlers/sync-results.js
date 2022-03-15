@@ -113,7 +113,7 @@ async function _validateRace(raceId, isPolling) {
 
   if (
     UNSET_RACER_NAMES.includes(race.participants[0].racer_name)
-    || race.status !== 'complete'
+    || race.participants[0].status !== 'complete'
   ) {
     if (isPolling) {
       throw new Error(`Race ${raceId} is not complete or has no racer name`);

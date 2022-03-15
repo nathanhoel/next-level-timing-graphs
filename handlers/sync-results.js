@@ -27,11 +27,20 @@ async function _doSync(callback, isPolling) {
   })).data;
 
   var racesAdded = 0;
-  for (let index = 0; index < Math.min(3, races.length); index++) {
-    const raceId = races[index].id;
-    if (await _parseRace(raceId, isPolling)) {
-      racesAdded++;
+  var errorMessages = false;
+  for (let index = 0; index < Math.min(20, races.length); index++) {
+    try {
+      const raceId = races[index].id;
+      if (await _parseRace(raceId, isPolling)) {
+        racesAdded++;
+      }
+    } catch e {
+      errorMessages += " " + e.message;
     }
+  }
+
+  if (errorMessages) {
+    throw new Error(errorMessages);
   }
 
   callback(null, {
@@ -104,7 +113,7 @@ async function _validateRace(raceId, isPolling) {
     || race.status !== 'complete'
   ) {
     if (isPolling) {
-      throw `Race ${raceId} is not complete or has no racer name`;
+      throw new Error(`Race ${raceId} is not complete or has no racer name`);
     }
     await lambda.invoke({
       FunctionName: 'next-level-timing-graphs-production-pollResults',

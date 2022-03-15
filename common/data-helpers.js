@@ -1,7 +1,7 @@
 
 module.exports = {
   getDriverBestResults: _getDriverBestResults,
-  accumalteLaps: _accumalteLaps,
+  accumalteLaps: _accumalateLaps,
   rankLaps: _rankLaps,
   sortByPlace: _sortByPlace,
 };
@@ -9,12 +9,14 @@ module.exports = {
 function _getDriverBestResults(results) {
   const bestResults = [];
   for (let i = 0; i < results.length; i++) {
+    // if this is the first driver or the next driver in the result set, initialize variables
     if (i === 0 || results[i].name !== results[i - 1].name) {
       const bestResult = results[i];
-      bestResult.overallFastestLap = bestResult.fastestLap;
-      bestResults.push(results[i]);
+      bestResult.overallFastestLap = bestResult.fastestLap; // init the overall fastest lap
+      bestResults.push(results[i]); // first result for each driver is the best one
     }
 
+    // if there is a faster lap in one of the worse results, record that
     const currentBestResult = bestResults[bestResults.length - 1];
     if (results[i].fastestLap < currentBestResult.overallFastestLap) {
       currentBestResult.overallFastestLap = results[i].fastestLap;
@@ -23,13 +25,14 @@ function _getDriverBestResults(results) {
   return bestResults;
 }
 
-function _accumalteLaps(results) {
+// get the race time for each lap
+function _accumalateLaps(results) {
   for (const result of results) {
-    const accumaltedLaps = [];
+    const accumalatedLaps = [];
     for (let i = 0; i < result.laps.length; i++) {
-      accumaltedLaps[i] = (accumaltedLaps[i - 1] || 0) + result.laps[i];
+      accumalatedLaps[i] = (accumalatedLaps[i - 1] || 0) + result.laps[i];
     }
-    result.accumaltedLaps = accumaltedLaps;
+    result.accumalatedLaps = accumalatedLaps;
   }
 }
 
@@ -42,7 +45,7 @@ function _rankLaps(results) {
   for (let lapNum = 0; lapNum < maxLaps; lapNum++) {
     const thisLapForAllDrivers = [];
     for (const result of results) {
-      const time = result.accumaltedLaps[lapNum];
+      const time = result.accumalatedLaps[lapNum];
       if (!time) {
         continue;
       }

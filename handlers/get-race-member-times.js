@@ -30,6 +30,9 @@ module.exports.handle = async function (event, context, callback) {
   }).promise();
   const allResults = query.Items;
 
+  console.log(event.pathParameters.name);
+  console.log(allResults);
+
   const bestResults = allResults;
   accumalteLaps(bestResults);
   rankLaps(bestResults);

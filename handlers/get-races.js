@@ -33,7 +33,7 @@ module.exports.handle = async function (event, context, callback) {
       ${header}
 
       <div id="title">
-        <h2>Races</h2>
+        <h5>Time Trials</h5>
       </div>
 
     </body>

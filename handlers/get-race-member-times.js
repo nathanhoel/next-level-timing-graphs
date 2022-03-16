@@ -11,16 +11,17 @@ const {
 
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const TABLE_NAME = `${process.env.STAGE}-nlt-results-v2`;
+const RESULTS_TABLE_NAME = `${process.env.STAGE}-nlt-results-v2`;
+const RACES_TABLE_NAME = `${process.env.STAGE}-races`;
 
 module.exports.handle = async function (event, context, callback) {
-  const race = {
-    id: event.pathParameters.id,
-    length: 180000,
-  };
+  const race = (await dynamoDb.get({
+    TableName : RACES_TABLE_NAME,
+    Key: { id: event.pathParameters.id }
+  }).promise()).Item;
 
   const query = await dynamoDb.query({
-    TableName: TABLE_NAME,
+    TableName: RESULTS_TABLE_NAME,
     IndexName: 'raceIndex',
     KeyConditionExpression: 'race = :hkey and begins_with(sortKey, :nam)',
     ExpressionAttributeValues: {
@@ -49,7 +50,7 @@ module.exports.handle = async function (event, context, callback) {
       ${header}
 
       <div id="title">
-        <h2><a href="https://3tmw38jjg8.execute-api.us-east-1.amazonaws.com/production/races">Races</a> > <a href="https://3tmw38jjg8.execute-api.us-east-1.amazonaws.com/production/races/${race.id}">${race.id}</a> > ${decodeURI(event.pathParameters.name)}</h2>
+        <h5><a href="https://3tmw38jjg8.execute-api.us-east-1.amazonaws.com/production/races">Time Trials</a> > <a href="https://3tmw38jjg8.execute-api.us-east-1.amazonaws.com/production/races/${race.id}">${race.name}</a> > ${decodeURI(event.pathParameters.name)}</h5>
       </div>
 
       ${getResultsTable(bestResults, fastestLap, overallFastestLap, race, false)}

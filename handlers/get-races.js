@@ -1,30 +1,20 @@
 const AWS = require('aws-sdk');
 const headTag = require('../common/head-tag');
 const header = require('../common/header');
-const getResultsTable = require('../common/results-table');
+const getRacesTable = require('../common/races-table');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = `${process.env.STAGE}-races`;
 
 module.exports.handle = async function (event, context, callback) {
-  // const query = await dynamoDb.query({
-  //   TableName: TABLE_NAME,
-  //   IndexName: 'typeIndex',
-  //   KeyConditionExpression: 'type = :hkey',
-  //   ExpressionAttributeValues: {
-  //     ':hkey': 'time-trial',
-  //   }
-  // }).promise();
-  // const allResults = query.Items;
-
-  // const bestResults = getDriverBestResults(allResults);
-  // accumalteLaps(bestResults);
-  // rankLaps(bestResults);
-  // sortByPlace(bestResults);
-
-  // const maxLaps = Math.max.apply(Math, bestResults.map(result => result.laps.length));
-  // const fastestLap = Math.min.apply(Math, bestResults.map(result => result.fastestLap));
-  // const overallFastestLap = Math.min.apply(Math, bestResults.map(result => result.overallFastestLap));
+  const races = (await dynamoDb.query({
+    TableName: TABLE_NAME,
+    IndexName: 'typeIndex',
+    KeyConditionExpression: 'type = :hkey',
+    ExpressionAttributeValues: {
+      ':hkey': 'time-trial',
+    }
+  }).promise()).Items;
 
   const html = `
   <html>
@@ -35,6 +25,8 @@ module.exports.handle = async function (event, context, callback) {
       <div id="title">
         <h5>Time Trials</h5>
       </div>
+
+      ${getRacesTable(races)}
 
     </body>
   </html>`;

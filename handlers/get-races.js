@@ -10,6 +10,7 @@ module.exports.handle = async function (event, context, callback) {
   const races = (await dynamoDb.query({
     TableName: TABLE_NAME,
     IndexName: 'typeIndex',
+    ScanIndexForward: false,
     KeyConditionExpression: '#type = :hkey',
     ExpressionAttributeNames: {
       '#type' : 'type'

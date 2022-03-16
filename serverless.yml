@@ -37,6 +37,13 @@ functions:
     timeout: 120
     maximumRetryAttempts: 2
 
+  getRaces:
+    handler: handlers/get-races.handle
+    events:
+      - http:
+          method: get
+          path: races
+
   getRaceTimes:
     handler: handlers/get-race.handle
     events:
@@ -74,6 +81,32 @@ resources:
               - AttributeName: race
                 KeyType: HASH
               - AttributeName: sortKey
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
+
+    RacesTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        TableName: '${opt:stage, self:provider.stage}-races'
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: type
+            AttributeType: S
+          - AttributeName: startDate
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: typeIndex
+            KeySchema:
+              - AttributeName: type
+                KeyType: HASH
+              - AttributeName: startDate
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL

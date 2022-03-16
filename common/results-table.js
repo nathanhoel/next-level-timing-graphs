@@ -2,7 +2,7 @@ const { msToTimeFormat } = require('../lib/time');
 
 module.exports = function (results, fastestLapInResults, overallFastestLap, race, isMultipleDrivers = true) {
   return `
-    <div style="margin-top: 50px;">
+    <div style="margin-top: 20px;">
       <table class="table table-striped">
         <thead>
           <tr>

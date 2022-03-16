@@ -25,6 +25,10 @@ module.exports = `
       margin: 50px;
     }
 
+    #title {
+      margin-top: 20px;
+    }
+
     .ct-axis-title {
       font-size: 0.7em;
       font-weight: 600;

@@ -19,7 +19,7 @@ const RACES_TABLE_NAME = `${process.env.STAGE}-races`;
 module.exports.handle = async function (event, context, callback) {
   const race = (await dynamoDb.get({
     TableName : RACES_TABLE_NAME,
-    Key: { HashKey: event.pathParameters.id }
+    Key: { id: event.pathParameters.id }
   }).promise()).Item;
 
   const query = await dynamoDb.query({

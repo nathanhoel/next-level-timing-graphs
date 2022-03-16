@@ -15,7 +15,7 @@ module.exports.handle = async function (event, context, callback) {
       '#type' : 'type'
     },
     ExpressionAttributeValues: {
-      ':hkey': 'time-trial',
+      ':hkey': 'time-trials',
     }
   }).promise()).Items;
 

@@ -13,16 +13,17 @@ const {
 
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const TABLE_NAME = `${process.env.STAGE}-nlt-results-v2`;
+const RESULTS_TABLE_NAME = `${process.env.STAGE}-nlt-results-v2`;
+const RACES_TABLE_NAME = `${process.env.STAGE}-races`;
 
 module.exports.handle = async function (event, context, callback) {
-  const race = {
-    id: event.pathParameters.id,
-    length: 180000,
-  };
+  const race = await dynamoDb.get({
+    TableName : RACES_TABLE_NAME,
+    Key: { HashKey: event.pathParameters.id }
+  }).promise();
 
   const query = await dynamoDb.query({
-    TableName: TABLE_NAME,
+    TableName: RESULTS_TABLE_NAME,
     IndexName: 'raceIndex',
     KeyConditionExpression: 'race = :hkey',
     ExpressionAttributeValues: {
@@ -47,7 +48,7 @@ module.exports.handle = async function (event, context, callback) {
       ${header}
 
       <div>
-        <h1><a href="https://3tmw38jjg8.execute-api.us-east-1.amazonaws.com/production/races">Races</a> > ${race.id}</h1>
+        <h1><a href="https://3tmw38jjg8.execute-api.us-east-1.amazonaws.com/production/races">Races</a> > ${race.name}</h1>
       </div>
 
       ${getResultsTable(bestResults, fastestLap, overallFastestLap, race)}

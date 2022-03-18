@@ -107,13 +107,14 @@ async function _validateRace(raceId, isPolling) {
     || !race.race_format
     || race.race_format.time !== 180000
     || race.race_format.mode !== 'race'
+    || !['active', 'complete'].includes(race.participants[0].status)
   ) {
     return false;
   }
 
   if (
     UNSET_RACER_NAMES.includes(race.participants[0].racer_name)
-    || race.participants[0].status !== 'complete'
+    || race.participants[0].status === 'active'
   ) {
     if (isPolling) {
       throw new Error(`Race ${raceId} is not complete or has no racer name`);
